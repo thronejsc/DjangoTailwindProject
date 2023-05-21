@@ -1,0 +1,12 @@
+asgiref
+certifi
+Django
+django-ckeditor
+django-js-asset
+django-modeltranslation
+django-tailwind
+mysqlclient
+Pillow
+pytz
+six
+sqlparse
