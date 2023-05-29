@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Document</title>
+</head>
+<body>
+    <h1>Upload Document</h1>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Upload">
+    </form>
+    
+    <h2>Uploaded Documents</h2>
+    <ul>
+        {% for document in documents %}
+            <li>{{ document.file.name }} - Subject: {{ document.subject }}, Year Level: {{ document.year_level }}</li>
+        {% empty %}
+            <li>No documents uploaded yet.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
