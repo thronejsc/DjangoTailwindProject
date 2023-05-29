@@ -5,6 +5,7 @@ from django.views.generic import CreateView
 
 from app.forms import MyUserCreationForm, ArticleForm, ReviewForm, ArticleFormFinal
 from django.contrib.auth.decorators import user_passes_test, login_required
+from django.db.models import Q
 
 from app.models import MyUser, STAGE_UNDER_REVIEW, Journal, Article, STAGE_PUBLISHED, EditorNote, STAGE_REJECTED, \
     STAGE_ACCEPTED
@@ -163,6 +164,24 @@ def article_view(request, article_id):
     }
     return render(request, template_name, context)
 
+def journal_search(request):
+    template_name = 'journal_search.html'
+    query = request.GET.get('q')
+    schoolworks = Journal.objects.all()
+    
+    if query:
+        schoolworks = schoolworks.filter(
+            Q(title__icontains=query) |
+            Q(subject__icontains=query) |
+            Q(author__icontains=query)
+        )
+    
+    context = {
+        'schoolworks': schoolworks,
+        'query': query
+    }
+    
+    return render(request, template_name, context)
 
 
 @user_passes_test(is_author)

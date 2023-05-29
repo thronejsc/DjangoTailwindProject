@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}
+        Journals Search
+    {% endblock %}</title>
+</head>
+<body>
+    <div class="container mx-auto">
+        <h1 class="text-3xl font-bold my-4">Journals Search</h1>
+        <form method="GET" action="{% url 'journal_search' %}">
+            <input type="text" name="q" placeholder="Search..." class="border rounded px-4 py-2 mb-4">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Search
+            </button>
+        </form>
+    </div>
+</body>
+</html>

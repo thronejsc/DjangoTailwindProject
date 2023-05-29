@@ -20,6 +20,7 @@ from django.urls import path, include
 from django.views.generic import  TemplateView
 # from chronicle import app
 from .views import index
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,4 +28,5 @@ urlpatterns = [
     path('profiles/', include('app.urls')),
     path('profiles/', include('django.contrib.auth.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('search/', views.journal_search, name='journal_search'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

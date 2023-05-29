@@ -21,5 +21,6 @@ urlpatterns = [
 
     path('publisher/article-list', views.publisher_article_list, name='publisher-article-list'),
     path('publisher/article-list/accepted/<int:article_id>', views.publisher_review, name='publisher_article'),
+    path('search/', views.journal_search, name='journal_search'),
 
 ]
