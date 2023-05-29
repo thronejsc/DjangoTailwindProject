@@ -1,5 +1,5 @@
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView
 
@@ -9,6 +9,9 @@ from django.db.models import Q
 
 from app.models import MyUser, STAGE_UNDER_REVIEW, Journal, Article, STAGE_PUBLISHED, EditorNote, STAGE_REJECTED, \
     STAGE_ACCEPTED
+
+from .models import Subject, Document
+from .forms import DocumentForm
 
 
 # ----DECORATOR
@@ -183,6 +186,17 @@ def journal_search(request):
     
     return render(request, template_name, context)
 
+def upload_document(request):
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            document = form.save(commit=False)
+            document.save()
+            return redirect('upload_document')
+    else:
+        form = DocumentForm()
+    documents = Document.objects.all()
+    return render(request, 'upload_document.html', {'form': form, 'documents': documents})
 
 @user_passes_test(is_author)
 def submit_article(request, journal_id):

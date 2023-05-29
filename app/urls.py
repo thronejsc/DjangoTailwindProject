@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 from . import views
 from .views import SignUpView
@@ -22,5 +22,6 @@ urlpatterns = [
     path('publisher/article-list', views.publisher_article_list, name='publisher-article-list'),
     path('publisher/article-list/accepted/<int:article_id>', views.publisher_review, name='publisher_article'),
     path('search/', views.journal_search, name='journal_search'),
+    path('upload/', views.upload_document, name='upload_document'),
 
 ]

@@ -2,7 +2,7 @@ from django import forms
 from .models import MyUser
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import Article, Journal, Keyword, Subject, EditorNote
+from .models import Article, Journal, Keyword, Subject, EditorNote, Document
 
 
 class MyUserCreationForm(UserCreationForm):
@@ -93,3 +93,8 @@ class ArticleFormFinal(forms.ModelForm):
                 'class': 'w-full md:w-1/3 rounded py-4 px-3 mb-6 md:mb-0'
             })
         }
+
+class DocumentForm(forms.ModelForm):
+    class Meta:
+        model = Document
+        fields = ('subject', 'year_level', 'file')

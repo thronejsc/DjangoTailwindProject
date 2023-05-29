@@ -165,3 +165,12 @@ class EditorNote(models.Model):
     def __str__(self):
         return "Article {article_pk} note at {created_at}".format(article_pk=self.article.pk,
                                                                     created_at=self.created_at)
+
+class Document(models.Model):
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    year_level = models.PositiveIntegerField()
+    file = models.FileField(upload_to='documents/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.file.name

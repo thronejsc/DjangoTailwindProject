@@ -1,5 +1,7 @@
-from app.models import Journal
-from django.shortcuts import render, get_object_or_404
+from app.models import Journal, Document
+from django.shortcuts import render, get_object_or_404, redirect
+from app.forms import DocumentForm
+
 
 
 def index(request):
@@ -24,3 +26,15 @@ def journal_search(request):
     }
     
     return render(request, template_name, context)
+
+def upload_document(request):
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            document = form.save(commit=False)
+            document.save()
+            return redirect('upload_document')
+    else:
+        form = DocumentForm()
+    documents = Document.objects.all()
+    return render(request, 'upload_document.html', {'form': form, 'documents': documents})
