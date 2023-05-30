@@ -98,3 +98,10 @@ class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
         fields = ('subject', 'year_level', 'file')
+
+    def clean_file(self):
+        file = self.cleaned_data.get('file')
+        if file:
+            if not file.name.endswith('.pdf'):
+                raise forms.ValidationError("Only PDF files are allowed.")
+        return file
