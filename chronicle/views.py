@@ -39,22 +39,3 @@ def upload_document(request):
         form = DocumentForm()
     documents = Document.objects.all()
     return render(request, 'upload_document.html', {'form': form, 'documents': documents})
-
-def search_document(request):
-    form = DocumentForm()
-    documents = []
-    not_found = False
-
-    if request.method == 'POST':
-        search_query = request.POST.get('search')
-        documents = Document.objects.filter(subject__icontains=search_query)
-        if not documents:
-            not_found = True
-
-    return render(request, 'search_document.html', {'form': form, 'documents': documents, 'not_found': not_found})
-
-def view_document(request, document_id):
-    document = get_object_or_404(Document, id=document_id)
-    file_content = document.get_file_content()
-
-    return render(request, 'view_document.html', {'document': document, 'file_content': file_content})

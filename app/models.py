@@ -5,7 +5,6 @@ from django.contrib.auth.models import (
 )
 from django.utils import timezone
 from ckeditor.fields import RichTextField
-from django.core.files.base import ContentFile
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, password=None):
@@ -167,24 +166,11 @@ class EditorNote(models.Model):
         return "Article {article_pk} note at {created_at}".format(article_pk=self.article.pk,
                                                                     created_at=self.created_at)
 
-class DatabaseStorage(models.FileField):
-    def _save(self, name, content):
-        self.name = self.generate_filename(self.instance, name)
-        self.instance.file = self.name
-        self.instance.file.save(name, ContentFile(content))
-    
-    def generate_filename(self, instance, filename):
-        return filename
-
 class Document(models.Model):
-    subject = models.CharField(max_length=100)
-    year_level = models.IntegerField()
-    file = DatabaseStorage(upload_to='')
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    year_level = models.PositiveIntegerField()
+    file = models.FileField(upload_to='documents/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.file.name
-
-    def get_file_content(self):
-        with open(self.file.path, 'rb') as file:
-            content = file.read()
-        return content

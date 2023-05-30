@@ -12,8 +12,6 @@ from app.models import MyUser, STAGE_UNDER_REVIEW, Journal, Article, STAGE_PUBLI
 
 from .models import Subject, Document
 from .forms import DocumentForm
-from django.shortcuts import render, get_object_or_404
-from .models import Document
 
 
 # ----DECORATOR
@@ -199,25 +197,6 @@ def upload_document(request):
         form = DocumentForm()
     documents = Document.objects.all()
     return render(request, 'upload_document.html', {'form': form, 'documents': documents})
-
-def search_document(request):
-    form = DocumentForm()
-    documents = []
-    not_found = False
-
-    if request.method == 'POST':
-        search_query = request.POST.get('search')
-        documents = Document.objects.filter(subject__icontains=search_query)
-        if not documents:
-            not_found = True
-
-    return render(request, 'search_document.html', {'form': form, 'documents': documents, 'not_found': not_found})
-
-def view_document(request, document_id):
-    document = get_object_or_404(Document, id=document_id)
-    file_content = document.get_file_content()
-
-    return render(request, 'view_document.html', {'document': document, 'file_content': file_content})
 
 @user_passes_test(is_author)
 def submit_article(request, journal_id):
