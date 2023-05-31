@@ -19,5 +19,16 @@
             </button>
         </form>
     </div>
+    <div>
+        <h1>Search Results for "{{ query }}"</h1>
+        <div id="context">
+        {% if context %}
+            <!-- Access the context data as needed -->
+            <p>Context: {{ schoolworks }}</p>
+        {% else %}
+            <p>panget ka.</p>
+        {% endif %}
+    </div>
+    </div>
 </body>
 </html>
