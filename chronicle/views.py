@@ -8,5 +8,3 @@ from django.db.models import Q
 def index(request):
     journals = Journal.objects.all()
     return render(request, 'home.html')
-
-

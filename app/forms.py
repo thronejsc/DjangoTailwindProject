@@ -2,7 +2,7 @@ from django import forms
 from .models import MyUser
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import Article, Journal, Keyword, Subject, EditorNote, Document
+from .models import Article, Journal, Keyword, Subject, EditorNote, Document, Comment
 
 
 class MyUserCreationForm(UserCreationForm):
@@ -105,3 +105,15 @@ class DocumentForm(forms.ModelForm):
             if not file.name.endswith('.pdf'):
                 raise forms.ValidationError("Only PDF files are allowed.")
         return file
+    
+from django import forms
+from .models import Comment
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('content',)
+
+    def __init__(self, *args, **kwargs):
+        super(CommentForm, self).__init__(*args, **kwargs)
+        self.fields['content'].widget = forms.TextInput(attrs={'placeholder': 'Add your comment...'})

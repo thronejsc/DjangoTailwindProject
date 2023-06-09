@@ -11,7 +11,7 @@ from app.models import MyUser, STAGE_UNDER_REVIEW, Journal, Article, STAGE_PUBLI
     STAGE_ACCEPTED
 
 from .models import Subject, Document
-from .forms import DocumentForm
+from .forms import DocumentForm, CommentForm
 from django.shortcuts import render, get_object_or_404
 from .models import Document
 
@@ -214,10 +214,37 @@ def search_document(request):
     return render(request, 'search_document.html', {'form': form, 'documents': documents, 'not_found': not_found})
 
 def view_document(request, document_id):
-    document = get_object_or_404(Document, id=document_id)
-    file_content = document.get_file_content()
+    document = get_object_or_404(Document, pk=document_id)
+    comments = document.comments.all()
 
-    return render(request, 'view_document.html', {'document': document, 'file_content': file_content})
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.document = document
+            comment.user = request.user
+            comment.save()
+            form = CommentForm()  # Clear the form for a new comment
+    else:
+        form = CommentForm()
+
+    return render(request, 'view_document.html', {'document': document, 'comments': comments, 'form': form})
+
+def download_document(request, document_id):
+    document = get_object_or_404(Document, pk=document_id)
+
+    # Retrieve the file path
+    file_path = document.file.path
+
+    # Open the file in binary mode
+    with open(file_path, 'rb') as file:
+        # Set the appropriate content type for the response
+        response = HttpResponse(file.read(), content_type='application/pdf')
+
+        # Set the Content-Disposition header to prompt download
+        response['Content-Disposition'] = 'attachment; filename="{}"'.format(document.file.name)
+
+        return response
 
 @user_passes_test(is_author)
 def submit_article(request, journal_id):

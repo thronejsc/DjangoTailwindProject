@@ -188,3 +188,12 @@ class Document(models.Model):
         with open(self.file.path, 'rb') as file:
             content = file.read()
         return content
+
+class Comment(models.Model):
+    document = models.ForeignKey(Document, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Comment by {self.myuser.username} on {self.document.subject}'
