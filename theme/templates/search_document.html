@@ -1,16 +1,9 @@
 <!-- search_document.html -->
 
-<h2>Upload Document</h2>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Upload</button>
-</form>
-
 <h2>Search Documents</h2>
 <form method="post">
     {% csrf_token %}
-    <input type="text" name="search" placeholder="Search by document field">
+    {{ form.as_p }}
     <button type="submit">Search</button>
 </form>
 

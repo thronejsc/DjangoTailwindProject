@@ -106,8 +106,9 @@ class DocumentForm(forms.ModelForm):
                 raise forms.ValidationError("Only PDF files are allowed.")
         return file
     
-from django import forms
-from .models import Comment
+class SearchForm(forms.Form):
+    subject = forms.CharField(max_length=100)
+    year_level = forms.IntegerField()
 
 class CommentForm(forms.ModelForm):
     class Meta:
