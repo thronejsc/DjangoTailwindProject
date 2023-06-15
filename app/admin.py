@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from .models import MyUser, Subject, Journal, Article, EditorNote, Keyword, Document, Comment
+from .models import MyUser, Subject, Journal, Article, EditorNote, Keyword, Document
 
 
 class UserCreationForm(forms.ModelForm):
@@ -101,4 +101,3 @@ admin.site.register(Journal)
 admin.site.register(Keyword)
 admin.site.register(EditorNote)
 admin.site.register(Document)
-admin.site.register(Comment)
