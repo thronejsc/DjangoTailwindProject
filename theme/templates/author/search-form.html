@@ -951,7 +951,7 @@
   <div class="flex items-center justify-between mb-4 md:mb-0">
     <h1 class="leading-none text-2xl text-grey-darkest">
       <a class="no-underline text-grey-darkest hover:text-white" href="{% url 'home' %}">
-        Computer Engineering Online Repository  
+        Computer Engineering Online Repository
       </a>
     </h1>
 
@@ -985,7 +985,7 @@
       </li>
       <li class="md:ml-4">
         <a class="border-t block no-underline hover:underline py-2 text-grey-darkest hover:text-black md:border-none md:p-0" href="{% url 'logout' %}">
-          Log out
+          Log Out
         </a>
       </li>
     </ul>
@@ -1019,7 +1019,7 @@
 <main class="flex-1 md:p-0 lg:pt-8 lg:px-8 md:mx-56 flex flex-col">
   <section class="bg-gray-100 p-4 shadow">
   <div>
-      <p class="text-center  text-3xl">Article form</p>
+      <p class="text-center  text-3xl">Search Document</p>
   </div>
   <form method="post">
   {% csrf_token %}
@@ -1037,9 +1037,19 @@
           <div class="mb-4">
               <label class="block uppercase tracking-wide text font-bold">{{ field.html_name }}</label>
               {{ field }}
-{#            <input class="w-full shadow-inner p-4 border-0" type="text" name="title" placeholder="Title ">#}
+{#            <input class="w-full shadow-inner p-4 border-0" type="text" name="search" placeholder="Search by document field">#}
           </div>
         {% endfor %}
+        {% if not_found %}
+            <p>No documents found.</p>
+        {% elif documents %}
+            <h2>Search Results</h2>
+            <ul>
+                {% for document in documents %}
+                    <li><a href="{% url 'view_document' document.id %}">{{ document }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
       </div>
     </div>
 

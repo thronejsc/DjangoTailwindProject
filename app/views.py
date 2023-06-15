@@ -11,7 +11,7 @@ from app.models import MyUser, STAGE_UNDER_REVIEW, Journal, Article, STAGE_PUBLI
     STAGE_ACCEPTED
 
 from .models import Subject, Document
-from .forms import DocumentForm, CommentForm
+from .forms import DocumentForm, CommentForm, SearchForm
 from django.shortcuts import render, get_object_or_404
 from .models import Document
 
@@ -201,17 +201,20 @@ def upload_document(request):
     return render(request, 'upload_document.html', {'form': form, 'documents': documents})
 
 def search_document(request):
-    form = DocumentForm()
+    form = SearchForm()
     documents = []
     not_found = False
 
     if request.method == 'POST':
-        search_query = request.POST.get('search')
-        documents = Document.objects.filter(subject__icontains=search_query)
-        if not documents:
-            not_found = True
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            subject = form.cleaned_data['subject']
+            year_level = form.cleaned_data['year_level']
+            documents = Document.objects.filter(subject__icontains=subject, year_level=year_level)
+            if not documents:
+                not_found = True
 
-    return render(request, 'search_document.html', {'form': form, 'documents': documents, 'not_found': not_found})
+    return render(request, 'author/search-form.html', {'form': form, 'documents': documents, 'not_found': not_found})
 
 def view_document(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
