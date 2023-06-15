@@ -198,4 +198,5 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'Comment by {self.myuser.username} on {self.document.subject}'
+        return f'Comment by {self.user.email} on {self.document.subject}'
+
