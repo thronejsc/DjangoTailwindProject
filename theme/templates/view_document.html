@@ -1,24 +1,84 @@
-<!-- Display document details -->
+
+<!-- Document details -->
 <h1>{{ document.subject }}</h1>
 <p>Year Level: {{ document.year_level }}</p>
 <p>File: <a href="{{ document.file.url }}">{{ document.file.name }}</a></p>
 
-<!-- Download button -->
-<a href="{% url 'download_document' document.id %}" class="btn btn-primary">Download</a>
+<!-- Document preview -->
+<div id="pdf-viewer"></div>
 
-<!-- Display existing comments -->
-<h2>Comments</h2>
-{% for comment in comments %}
-    <p>{{ comment.content }}</p>
-    <p>By {{ comment.user.username }} at {{ comment.created_at }}</p>
-{% empty %}
-    <p>No comments yet.</p>
-{% endfor %}
+<!-- Include the PDF.js library -->
+<script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
 
-<!-- Add comment form -->
-<h2>Add a Comment</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Submit</button>
-</form>
+<script>
+    // Get the URL of the PDF file
+    const pdfUrl = "{{ document.file.url }}";
+
+    // Get the container element for the PDF viewer
+    const viewerContainer = document.getElementById("pdf-viewer");
+
+    // Create a new PDF.js viewer
+    pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
+        const numPages = pdf.numPages;
+        const pagesPromises = [];
+
+        // Fetch each page and render it
+        for (let i = 1; i <= numPages; i++) {
+            pagesPromises.push(pdf.getPage(i));
+        }
+
+        Promise.all(pagesPromises).then(pages => {
+            // Render each page onto a canvas and append it to the viewer container
+            pages.forEach(page => {
+                const viewport = page.getViewport({ scale: 1 });
+                const canvas = document.createElement("canvas");
+                const context = canvas.getContext("2d");
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                viewerContainer.appendChild(canvas);
+
+                page.render({
+                    canvasContext: context,
+                    viewport: viewport
+                });
+            });
+
+            // Display the download button, comments section, and add comment form
+            const downloadButton = document.createElement("a");
+            downloadButton.href = "{% url 'download_document' document.id %}";
+            downloadButton.className = "btn btn-primary";
+            downloadButton.textContent = "Download";
+
+            const commentsSection = document.createElement("div");
+            commentsSection.className = "comments-section";
+            commentsSection.innerHTML = `
+                <h2>Comments</h2>
+                {% for comment in comments %}
+                    <p>{{ comment.content }}</p>
+                    <p>By {{ comment.user.username }} at {{ comment.created_at }}</p>
+                {% empty %}
+                    <p>No comments yet.</p>
+                {% endfor %}
+            `;
+
+            const addCommentForm = document.createElement("form");
+            addCommentForm.method = "post";
+            addCommentForm.innerHTML = `
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Submit</button>
+            `;
+
+            const downloadCommentsContainer = document.createElement("div");
+            downloadCommentsContainer.className = "download-comments-container";
+            downloadCommentsContainer.appendChild(downloadButton);
+            downloadCommentsContainer.appendChild(commentsSection);
+            downloadCommentsContainer.appendChild(addCommentForm);
+
+            // Append the download, comments section, and add comment form after the PDF viewer
+            viewerContainer.insertAdjacentElement("afterend", downloadCommentsContainer);
+        });
+    });
+</script>
+</body>
+</html>
