@@ -14,7 +14,8 @@ from .models import Subject, Document
 from .forms import DocumentForm, CommentForm, SearchForm
 from django.shortcuts import render, get_object_or_404
 from .models import Document
-
+from django.http import JsonResponse
+from django.utils import timezone
 
 # ----DECORATOR
 
@@ -216,6 +217,7 @@ def search_document(request):
 
     return render(request, 'author/search-form.html', {'form': form, 'documents': documents, 'not_found': not_found})
 
+@login_required  # Require user authentication to access this view
 def view_document(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
     comments = document.comments.all()
@@ -227,11 +229,31 @@ def view_document(request, document_id):
             comment.document = document
             comment.user = request.user
             comment.save()
-            form = CommentForm()  # Clear the form for a new comment
+            return JsonResponse({'success': True})  # Return a JSON response indicating successful comment submission
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})  # Return a JSON response with form errors
     else:
         form = CommentForm()
 
     return render(request, 'view_document.html', {'document': document, 'comments': comments, 'form': form})
+
+def comment_submit(request, document_id):
+    if request.method == 'POST':
+        document = get_object_or_404(Document, pk=document_id)
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.document = document
+            comment.user = request.user
+            comment.created_at = timezone.now()
+            comment.save()
+            return redirect('view_document', document_id=document_id)  # Redirect to the view_document page
+        else:
+            form = CommentForm()  # Clear the form for a new comment
+            comments = document.comments.all()
+            return render(request, 'view_document.html', {'document': document, 'comments': comments, 'form': form})
+    else:
+        return redirect('view_document', document_id=document_id)  # Redirect to the view_document page for invalid request method
 
 def download_document(request, document_id):
     document = get_object_or_404(Document, pk=document_id)

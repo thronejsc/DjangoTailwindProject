@@ -1,1 +1,4 @@
 *.idea
+DjangoTailwindProject/theme/__pycache__/
+theme/__pycache__/
+*.pyc
