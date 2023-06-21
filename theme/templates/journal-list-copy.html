@@ -1,13 +1,12 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}
-    Article
+        Journals
     {% endblock %}</title>
     <meta name="description" content="">
     <meta name="keywords" content="">
@@ -20,7 +19,7 @@
 
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet">
 
-    <!-- Define your gradient here - use online tools to find a gradient matching your branding-->
+    
     <link rel="stylesheet" href="{% static 'css/mystyle.css' %}">
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/1.4.6/tailwind.min.css">
@@ -31,8 +30,11 @@
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <style>
         .gradient {
-            {##141e30 → #243b55#}
-            background: linear-gradient(90deg, #141e30 0%, #243b55 100%);
+            background: linear-gradient(90deg, #000428 0%, #004e92 100%);
+            {% comment %} background: linear-gradient(90deg, #141e30 0%, #243b55 100%); {% endcomment %}
+        }
+        .gradient1 {
+            background: linear-gradient(90deg, #780206 0%, #061161 100%);
         }
         .gradient2 {
             background: linear-gradient(#a1c4fd 0%, #c2e9fb 100%);
@@ -40,10 +42,18 @@
         .gradient3 {
             background: linear-gradient(90deg, #a1c4fd 0%, #c2e9fb 100%);
         }
+
+        @media (min-width: 1024px) {
+          .top-navbar {
+            display: inline-flex !important;
+          }
+        }
+
     </style>
 </head>
-<body class="leading-normal tracking-normal text-gray-800 antialiased bg-gray-100" style="font-family: 'Roboto', sans-serif;">
-<nav class="gradient flex items-center bg-gray-800 p-3 flex-wrap">
+<body class="text-gray-800 antialiased bg-gray-100" style="font-family: 'Roboto', sans-serif;">
+
+<nav class="gradient4 flex items-center bg-gray-800 p-3 flex-wrap">
       <a href="#" class="p-2 mr-4 inline-flex items-center">
         <svg
           viewBox="0 0 24 24"
@@ -55,7 +65,7 @@
           />
         </svg>
         <span class="text-xl text-white font-bold uppercase tracking-wide"
-          >Computer Engineering Classwork Repository</span
+          >Computer Engineering Online Repository</span
         >
       </a>
       <button
@@ -71,6 +81,12 @@
         <div
           class="lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start  flex flex-col lg:h-auto"
         >
+          <a
+            href="{% url 'search_document' %}"
+            class="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-gray-900 hover:text-white"
+          >
+            <span>Search</span>
+          </a>
           <a
             href="{% url 'home' %}"
             class="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-gray-400 items-center justify-center hover:bg-gray-900 hover:text-white"
@@ -113,58 +129,55 @@
         </div>
       </div>
     </nav>
-{# MAIN DETAILS#}
-<div class="container mx-auto my-10 bg-white p-5 shadow-xl rounded-lg overflow-hidden ">
-    <div class="text-center">
-        <h3 class="mb-2 text-base text-teal-700 text-3xl hover:text-gray-700">{{ article.issue_title }}</h3>
-        <p class="text-left text-teal-700 text-xl"><strong>Abstract</strong></p>
-        <p class="text-grey-600 text text-left">{{ article.abstract }}</p>
-    </div>
-​   <div class="mt-4 text-teal-500">
-    <a href="{{ article.journal.get_absolute_url }}"><strong>Journal - </strong>{{ article.journal }}</a>
-    </div>
-    <div class="my-4">
-        <a  class="no-underline mr-4 text-teal-500 mb-1  item-center hover:text-blue-400"><strong>Vol.</strong>{{ article.volume }}</a>
-        <a  class="no-underline mr-4 text-teal-500 mb-1  item-center hover:text-blue-400"><strong>Issue.</strong> {{ article.issue }}</a>
-    </div>
-    <a  class="no-underline mr-4  text-teal-500 mb-1  item-center hover:text-blue-400"><strong>Published at</strong> {{ article.published_at }}</a>
+{#    {% for journal in journals %}#}
+{#        <div class="column">#}
+{#            <div class="notification is-info ">#}
+{#                <p class="has-text-light">Journal Name - {{ journal.code }}</p>#}
+{#                <p>Journal Description - </p>#}
+{#                <p>#}
+{#                    {{ journal.description }}#}
+{#                </p>#}
+                {#<p>{{ journal.id }}</p>#}
+{#                <a href="{{ journal.get_absolute_url }}">Link</a>#}
+{#                <img src="{{ journal.j_image.url }}">#}
+{#            </div>#}
+{#        </div>#}
+{#    {% endfor %}#}
+<p class="text-2xl text-gray-700 text-center my-10">Schoolworks</p>
 
-    <div class="mt-4">
-        {% if keywords.all %}
-            <p class="inline p-2 text-teal-500"><strong>Keywords</strong> - </p>
-        {% endif %}
-        {% for key in keywords.all %}
-            <a class="inline bg-teal-500 py-1 px-4 mx-1  rounded-full  text-white" href="#">{{ key }}</a>
-        {% endfor %}
+<div class="container my-12 mx-auto px-4 md:px-12">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
+    {% for journal in journals %}
+    <!-- Column -->
+    <div class="max-w-sm rounded-lg overflow-hidden shadow-lg">
+      <a href="{{ journal.get_absolute_url }}">
+        <img alt="Journal Image" class="w-full h-56 object-cover" src="{{ journal.j_image.url }}">
+      </a>
+      <div class="px-6 py-4">
+        <div class="font-bold text-lg mb-2">
+          <a class="no-underline hover:underline text-black" href="{{ journal.get_absolute_url }}">
+            {{ journal.code }}
+          </a>
+        </div>
+        <p class="text-gray-700 text-sm">{{ journal.subject }}</p>
+      </div>
+      <div class="px-6 py-4 flex items-center justify-between">
+        <a class="flex items-center no-underline hover:underline text-black" href="{{ journal.get_absolute_url }}">
+          <!-- <img alt="Placeholder" class="block rounded-full" src="https://picsum.photos/32/32/?random"> -->
+          <p class="ml-2 text-sm">{{ journal.subject }}</p>
+        </a>
+        <a class="no-underline text-gray-700 hover:text-red-700" href="#">
+          <span class="hidden">Like</span>
+          <!-- <i class="fa fa-heart"></i> -->
+        </a>
+      </div>
     </div>
+    <!-- END Column -->
+    {% endfor %}
 
+  </div>
 </div>
-{#ARTICLE TEXT#}
-<div class="container mx-auto p-8">
-
-    <div class="bg-white p-10 shadow-xl hover:shadow-2xl transition delay-200 duration-100 ease-in-out rounded-lg overflow-hidden ">
-        <p><strong></strong></p>
-        {{ article.text|safe }}
-    </div>
-    <hr>
-{#    <strong>Time</strong>#}
-{#    <time datetime="2016-1-1">{{ article.published_at }}</time>#}
-</div>
-
-<footer class="my-12"> </footer>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
-<script>
-  $(document).ready(function() {
-  $(".nav-toggler").each(function(_, navToggler) {
-    var target = $(navToggler).data("target");
-    $(navToggler).on("click", function() {
-      $(target).animate({
-        height: "toggle"
-      });
-    });
-  });
-});
 
 </body>
 </html>

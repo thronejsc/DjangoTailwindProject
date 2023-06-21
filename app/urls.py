@@ -24,7 +24,7 @@ urlpatterns = [
     path('search/', views.journal_search, name='journal_search'),
     path('upload/', views.upload_document, name='upload_document'),
     path('searchdoc/', views.search_document, name='search_document'),
-    path('view/<int:document_id>/', views.view_document, name='view_document'),
-    path('view/<int:document_id>/download/', views.download_document, name='download_document'),
+    path('document/<int:document_id>/', views.view_document, name='view_document'),
+    path('document/<int:document_id>/comment_submit/', views.comment_submit, name='comment_submit'),
 
 ]

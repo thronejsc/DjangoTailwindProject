@@ -1,0 +1,263 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Journal</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  
+  <!-- Font Awesome if you need it -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
+  
+  <link rel="stylesheet" href="https://unpkg.com/tailwindcss/dist/tailwind.min.css">
+  <!--Replace with your tailwind.css once created-->
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet">
+
+  <!-- Custom CSS-->
+  <style>    
+    /* Add your custom styles here */
+    
+    /* Example styles */
+    .slide-in-bottom {
+      animation: slide-in-bottom 0.5s cubic-bezier(.25,.46,.45,.94) both;
+    }
+    
+    .slide-in-bottom-h1 {
+      animation: slide-in-bottom 0.5s cubic-bezier(.25,.46,.45,.94) 0.5s both;
+    }
+    
+    .slide-in-bottom-subtitle {
+      animation: slide-in-bottom 0.5s cubic-bezier(.25,.46,.45,.94) 0.75s both;
+    }
+    
+    .fade-in {
+      animation: fade-in 1.2s cubic-bezier(.39,.575,.565,1.000) 1s both;
+    }
+    
+    .bounce-top-icons {
+      animation: bounce-top 0.9s 1s both;
+    }
+    
+    @keyframes slide-in-bottom {
+      0% {
+        transform: translateY(1000px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes bounce-top {
+      0% {
+        transform: translateY(-45px);
+        animation-timing-function: ease-in;
+        opacity: 1;
+      }
+      24% {
+        opacity: 1;
+      }
+      40% {
+        transform: translateY(-24px);
+        animation-timing-function: ease-in;
+      }
+      65% {
+        transform: translateY(-12px);
+        animation-timing-function: ease-in;
+      }
+      82% {
+        transform: translateY(-6px);
+        animation-timing-function: ease-in;
+      }
+      93% {
+        transform: translateY(-4px);
+        animation-timing-function: ease-in;
+      }
+      25%, 55%, 75%, 87% {
+        transform: translateY(0);
+        animation-timing-function: ease-out;
+      }
+      100% {
+        transform: translateY(0);
+        animation-timing-function: ease-out;
+        opacity: 1;
+      }
+    }
+    
+    @keyframes fade-in {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+    
+    /* Custom styles for an aesthetic design */
+    body {
+      background-color: #1a202c;
+      font-family: 'Source Sans Pro', sans-serif;
+      color: #fff;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+    }
+    
+    .logo {
+      font-weight: bold;
+      font-size: 1.5rem;
+      text-decoration: none;
+      color: #fff;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .nav-link {
+      text-decoration: none;
+      color: #fff;
+      transition: color 0.3s ease;
+    }
+    
+    .nav-link:hover {
+      color: #93c5fd;
+    }
+    
+    .main {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 3rem;
+      padding-bottom: 6rem;
+    }
+    
+    .main-content {
+      flex-basis: 100%;
+      text-align: center;
+    }
+    
+    .main-title {
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 1.5rem;
+    }
+    
+    .main-subtitle {
+      font-size: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 1rem 2rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #fff;
+      background-color: #2563eb;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      text-decoration: none;
+    }
+    
+    .btn:hover {
+      background-color: #3b82f6;
+    }
+    
+    .image-wrapper {
+      flex-basis: 100%;
+      text-align: center;
+      margin-top: 3rem;
+    }
+    
+    .image {
+      width: 80%;
+      max-width: 500px;
+    }
+    
+    .footer {
+      margin-top: 3rem;
+      font-size: 0.875rem;
+      text-align: center;
+    }
+   /* Gradient background color */
+   .bg-gradient-to-b {
+      background-image: linear-gradient(to bottom, #1a202c, #000000);
+    }
+  </style>
+
+</head>
+
+<body>
+
+	<div class="leading-normal tracking-normal text-gray-900 bg-gradient-to-b" style="font-family: 'Roboto', sans-serif;">
+
+
+    <!-- Nav -->
+    <div class="header">
+      <a class="logo" href="#">Computer Engineering Classwork Repository</a>
+      {% if user.is_authenticated %}
+        <div class="nav-links">
+          <a class="nav-link" href="{% url 'where-next' %}">Dashboard</a>
+          <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+        </div>
+      {% else %}
+        <div class="nav-links">
+          <a class="nav-link" href="{% url 'signup' %}">Signup</a>
+          <a class="nav-link" href="{% url 'login' %}">Login</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Main -->
+    <div class="container main">
+      <!-- Left Col -->
+      <div class="main-content">
+        <h1 class="main-title slide-in-bottom-h1">Empowering Knowledge</h1>
+        <p class="main-subtitle slide-in-bottom-subtitle">We help you manage work more efficiently so you can spend more time making breakthroughs</p>
+        
+        <p class="text-blue-400 font-bold pb-8 lg:pb-6 fade-in">Find Classworks</p>
+        <a href="{% url 'journal-list' %}" class="btn fade-in">
+          <i class="fas fa-book-open"></i>
+          <span class="px-4">Classworks</span>
+        </a>
+      </div>
+
+      <!-- Right Col -->
+      <div class="image-wrapper">
+        <img class="image slide-in-bottom" src="{% static 'images/bg4.svg' %}">
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        {% comment %} <a class="text-gray-500 no-underline hover:no-underline" href="#">&copy; App 2023</a> {% endcomment %}
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery if you need it
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  -->
+
+</body>
+
+</html>

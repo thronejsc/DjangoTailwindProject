@@ -178,8 +178,8 @@ class DatabaseStorage(models.FileField):
 
 class Document(models.Model):
     subject = models.CharField(max_length=100)
-    year_level = models.IntegerField()
-    file = DatabaseStorage(upload_to='')
+    year_level = models.PositiveIntegerField()
+    file = models.FileField(upload_to='')
 
     def __str__(self):
         return self.file.name
