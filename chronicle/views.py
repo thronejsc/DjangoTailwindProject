@@ -9,6 +9,10 @@ def index(request):
     journals = Journal.objects.all()
     return render(request, 'home.html')
 
-def index2(request):
+def journal_list2(request):
     journals = Journal.objects.all()
-    return render(request, 'home2.html')
+    context = {
+        'journals': journals
+    }
+    return render(request, 'journal-list copy.html', context)
+    

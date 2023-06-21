@@ -19,13 +19,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import  TemplateView
 # from chronicle import app
-from .views import index, index2
+from .views import index, journal_list2
 from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index, name='home'),
-    path('home2/', index2, name='home2'),
+    path('j2', journal_list2, name='j2'),
     path('profiles/', include('app.urls')),
     path('profiles/', include('django.contrib.auth.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
