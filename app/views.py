@@ -16,6 +16,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import Document
 from django.http import JsonResponse
 from django.utils import timezone
+from django.core.files.base import ContentFile
 
 # ----DECORATOR
 
@@ -194,12 +195,17 @@ def upload_document(request):
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
             document = form.save(commit=False)
+            file_content = request.FILES['file'].read()
+            file_name = request.FILES['file'].name
+            document.file.save(file_name, ContentFile(file_content))
+            document.file.close()  # Close the file after saving to the database
             document.save()
             return redirect('upload_document')
     else:
         form = DocumentForm()
     documents = Document.objects.all()
     return render(request, 'upload_document.html', {'form': form, 'documents': documents})
+
 
 def search_document(request):
     form = SearchForm()
@@ -217,7 +223,7 @@ def search_document(request):
 
     return render(request, 'author/search-form.html', {'form': form, 'documents': documents, 'not_found': not_found})
 
-@login_required  # Require user authentication to access this view
+@login_required
 def view_document(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
     comments = document.comments.all()
@@ -235,7 +241,14 @@ def view_document(request, document_id):
     else:
         form = CommentForm()
 
-    return render(request, 'view_document.html', {'document': document, 'comments': comments, 'form': form})
+    # Assuming you have a FileField or ImageField in the Document model
+    pdf_file = document.file
+
+    # Generate the URL for the PDF file
+    pdf_url = request.build_absolute_uri(pdf_file.url)
+
+    return render(request, 'view_document.html', {'document': document, 'comments': comments, 'form': form, 'pdf_url': pdf_url})
+
 
 def comment_submit(request, document_id):
     if request.method == 'POST':

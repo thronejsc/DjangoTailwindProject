@@ -81,7 +81,7 @@
             margin-bottom: 20px;
         }
 
-        #pdf-pages {
+        #pdf-container {
             display: flex;
             flex-wrap: wrap;
         }
@@ -169,7 +169,7 @@
             <!-- Navigation links -->
             {% if user.is_authenticated %}
                 <div class="nav-links">
-                    <a class="nav-link" href="{% url 'where-next' %}">Dashboard</a>
+                    <a class="nav-link" href="{% url 'home' %}">Dashboard</a>
                     <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                 </div>
             {% else %}
@@ -189,7 +189,7 @@
 
         <!-- PDF viewer -->
         <div class="pdf-viewer">
-            <div id="pdf-pages"></div>
+            <div id="pdf-container"></div>
         </div>
 
         <!-- Comments section -->
@@ -226,39 +226,50 @@
         // Get the URL of the PDF file
         const pdfUrl = "{{ document.file.url }}";
 
-        // Get the container element for the PDF pages
-        const pdfPagesContainer = document.getElementById("pdf-pages");
+        // Fetch the PDF data and create a new PDF.js viewer
+        fetch(pdfUrl)
+            .then(response => response.arrayBuffer())
+            .then(data => {
+                // Create a new Uint8Array from the PDF data
+                const uint8Array = new Uint8Array(data);
 
-        // Create a new PDF.js viewer
-        pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
-            const numPages = pdf.numPages;
-            const pagesPromises = [];
+                // Create a blob from the Uint8Array
+                const blob = new Blob([uint8Array], { type: 'application/pdf' });
 
-            // Fetch each page and render it
-            for (let i = 1; i <= numPages; i++) {
-                pagesPromises.push(pdf.getPage(i));
-            }
+                // Convert the blob to a data URL
+                const dataUrl = URL.createObjectURL(blob);
 
-            Promise.all(pagesPromises).then(pages => {
-                // Render each page onto a canvas and append it to the viewer container
-                pages.forEach(page => {
-                    const viewport = page.getViewport({ scale: 1 });
-                    const canvas = document.createElement("canvas");
-                    const context = canvas.getContext("2d");
-                    canvas.width = viewport.width;
-                    canvas.height = viewport.height;
-                    const pdfPage = document.createElement("div");
-                    pdfPage.className = "pdf-page";
-                    pdfPage.appendChild(canvas);
-                    pdfPagesContainer.appendChild(pdfPage);
+                // Create a new PDF.js viewer
+                pdfjsLib.getDocument(dataUrl).promise.then(pdf => {
+                    const numPages = pdf.numPages;
+                    const pagesPromises = [];
 
-                    page.render({
-                        canvasContext: context,
-                        viewport: viewport
+                    // Fetch each page and render it
+                    for (let i = 1; i <= numPages; i++) {
+                        pagesPromises.push(pdf.getPage(i));
+                    }
+
+                    Promise.all(pagesPromises).then(pages => {
+                        // Render each page onto a canvas and append it to the viewer container
+                        pages.forEach(page => {
+                            const viewport = page.getViewport({ scale: 1 });
+                            const canvas = document.createElement("canvas");
+                            const context = canvas.getContext("2d");
+                            canvas.width = viewport.width;
+                            canvas.height = viewport.height;
+                            const pdfPage = document.createElement("div");
+                            pdfPage.className = "pdf-page";
+                            pdfPage.appendChild(canvas);
+                            document.getElementById("pdf-container").appendChild(pdfPage);
+
+                            page.render({
+                                canvasContext: context,
+                                viewport: viewport
+                            });
+                        });
                     });
                 });
             });
-        });
     </script>
 </body>
 </html>
