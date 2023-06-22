@@ -180,6 +180,7 @@ class Document(models.Model):
     subject = models.CharField(max_length=100)
     year_level = models.PositiveIntegerField()
     file = models.FileField(upload_to='')
+    embedded_url = models.URLField(blank=True)
 
     def __str__(self):
         return self.file.name
@@ -188,6 +189,7 @@ class Document(models.Model):
         with open(self.file.path, 'rb') as file:
             content = file.read()
         return content
+
     
     
 
