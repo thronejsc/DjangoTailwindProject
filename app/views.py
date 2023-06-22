@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView
@@ -17,18 +17,12 @@ from .models import Document
 from django.http import JsonResponse
 from django.utils import timezone
 from django.core.files.base import ContentFile
-
+import requests
 # ----DECORATOR
 
 
 def is_author(user):
     if user.user_type == "AUTHOR":
-        return True
-    return False
-
-
-def is_editor(user):
-    if user.user_type == "EDITOR":
         return True
     return False
 
@@ -52,12 +46,17 @@ def where_next(request):
     """Simple redirector to figure out where the user goes next."""
     if request.user.is_anonymous:
         return HttpResponse(reverse('login'))
+    elif request.user.is_admin:
+        # Allow admin users access to anything
+        return HttpResponseRedirect(reverse('admin:index'))
     elif request.user.user_type == "AUTHOR":
         return HttpResponseRedirect(reverse('author-profile'))
-    elif request.user.user_type == "EDITOR":
-        return HttpResponseRedirect(reverse('editor-profile'))
     elif request.user.user_type == "PUBLISHER":
         return HttpResponseRedirect(reverse('publisher-profile'))
+    else:
+        # Redirect for users without specific roles
+        return HttpResponse("Unauthorized")
+
 
 
 @user_passes_test(is_author)
@@ -87,7 +86,7 @@ def author_base(request):
     return render(request, 'author/author.html', context)
 
 
-@user_passes_test(is_editor)
+"""@user_passes_test(is_editor)
 def editor_base(request):
     articles_accepted = Article.objects.filter(state='Accepted').count()
     articles_in_queue = Article.objects.filter(state='Under Review').count()
@@ -111,7 +110,7 @@ def editor_base(request):
         'labels': labels,
         'data': data,
     }
-    return render(request, 'editor/editor.html', context)
+    return render(request, 'editor/editor.html', context)"""
 
 
 @user_passes_test(is_publisher)
@@ -235,9 +234,7 @@ def view_document(request, document_id):
             comment.document = document
             comment.user = request.user
             comment.save()
-            return JsonResponse({'success': True})  # Return a JSON response indicating successful comment submission
-        else:
-            return JsonResponse({'success': False, 'errors': form.errors})  # Return a JSON response with form errors
+            return redirect('view_document', document_id=document_id)  # Redirect to the view_document page
     else:
         form = CommentForm()
 
@@ -247,7 +244,23 @@ def view_document(request, document_id):
     # Generate the URL for the PDF file
     pdf_url = request.build_absolute_uri(pdf_file.url)
 
+    embedded_url = document.embedded_url
+
+    # Check if embedded_url exists and raise 404 error if it cannot be fetched
+    if embedded_url:
+        try:
+            response = requests.get(embedded_url)
+            response.raise_for_status()
+        except requests.exceptions.RequestException:
+            raise Http404("Embedded URL not accessible")
+        except requests.exceptions.HTTPError as error:
+            raise Http404(f"Embedded URL returned {error.response.status_code} error")
+
+        # Debugging information
+        print(response.content)  # Print the content of the response for inspection
+
     return render(request, 'view_document.html', {'document': document, 'comments': comments, 'form': form, 'pdf_url': pdf_url})
+
 
 
 def comment_submit(request, document_id):
@@ -305,7 +318,7 @@ def submit_article(request, journal_id):
         return render(request, 'author/article-form.html', {'form': form})
 
 
-@login_required
+"""@login_required
 @user_passes_test(is_editor)
 def article_list(request):
     pending_articles = Article.objects.filter(state=STAGE_UNDER_REVIEW)
@@ -316,10 +329,10 @@ def article_list(request):
         'accepted_articles': accepted_articles,
         'rejected_articles': rejected_articles,
     }
-    return render(request, 'editor/article-list.html', context)
+    return render(request, 'editor/article-list.html', context)"""
 
 
-@login_required
+"""@login_required
 @user_passes_test(is_editor)
 def review_pending_article(request, article_id):
     reviewed_article = get_object_or_404(Article, id=article_id)
@@ -339,7 +352,7 @@ def review_pending_article(request, article_id):
     else:
         form = ReviewForm()
         return render(request, 'editor/review-article.html', {'form': form, 'article': reviewed_article,
-                                                                'comments': reviewed_article.Editornotes.all()})
+                                                                'comments': reviewed_article.Editornotes.all()})"""
 
 
 @login_required

@@ -26,16 +26,16 @@ class MyUserManager(BaseUserManager):
 
     def create_superuser(self, email, password):
         """
-        Creates and saves a superuser with the given email, date of
-        birth and password.
+        Creates and saves a superuser with the given email and password.
         """
         user = self.create_user(
-            email,
+            email=email,
             password=password,
         )
         user.is_admin = True
         user.save(using=self._db)
         return user
+
 
 
 class MyUser(AbstractBaseUser):
@@ -46,9 +46,8 @@ class MyUser(AbstractBaseUser):
         unique=True,
     )
     USER_TYPE_CHOICES = (
-        ('AUTHOR', 'author'),
-        ('EDITOR', 'editor'),
-        ('PUBLISHER', 'publisher'),
+    ('AUTHOR', 'author'),
+    ('PUBLISHER', 'publisher'),
     )
     user_type = models.CharField(choices=USER_TYPE_CHOICES, max_length=64, default='author')
     bio = models.TextField(null=True)
@@ -180,6 +179,7 @@ class Document(models.Model):
     subject = models.CharField(max_length=100)
     year_level = models.PositiveIntegerField()
     file = models.FileField(upload_to='')
+    embedded_url = models.URLField(blank=True)
 
     def __str__(self):
         return self.file.name
@@ -188,6 +188,7 @@ class Document(models.Model):
         with open(self.file.path, 'rb') as file:
             content = file.read()
         return content
+
     
     
 

@@ -1,275 +1,138 @@
-{% load static %}
+<!-- view_document.html -->
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Document Details</title>
+    <title>View Document</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #F7F7F7;
+        /* CSS Reset */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f8fd;
+            padding: 20px;
         }
 
         .container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 20px;
-            background-color: #FFFFFF;
-            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        h1 {
+            color: #337ab7;
             margin-bottom: 20px;
         }
 
-        .logo {
-            color: #333333;
-            font-size: 24px;
-            text-decoration: none;
-            font-weight: 600;
+        .pdf-preview {
+            margin-bottom: 30px;
         }
 
-        .nav-links {
-            display: flex;
+        .pdf-preview iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
         }
 
-        .nav-link {
-            margin-right: 10px;
-            color: #333333;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .nav-link:hover {
-            color: #000000;
-        }
-
-        .document-details {
-            margin-bottom: 20px;
-        }
-
-        .document-title {
-            font-size: 32px;
-            color: #333333;
-            margin: 0;
-            font-weight: 600;
-        }
-
-        .document-info {
-            color: #666666;
-            margin: 0;
-            font-weight: 500;
-        }
-
-        .document-info a {
-            color: #333333;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .document-info a:hover {
-            color: #000000;
-        }
-
-        .pdf-viewer {
-            margin-bottom: 20px;
-        }
-
-        #pdf-container {
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .pdf-page {
-            margin: 10px;
-            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            border-radius: 4px;
-        }
-
-        .comments-section {
-            margin-bottom: 20px;
+        .comments {
+            margin-bottom: 30px;
         }
 
         .comment {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .comment .info {
+            display: flex;
+            align-items: center;
             margin-bottom: 10px;
-            padding: 10px;
-            background-color: #F8F8F8;
-            border-radius: 4px;
         }
 
-        .comment-content {
-            color: #333333;
-            margin: 0;
-            font-weight: 500;
+        .comment .info .email {
+            color: #337ab7;
+            margin-right: 10px;
         }
 
-        .comment-details {
-            color: #666666;
-            margin: 0;
-            font-size: 12px;
-            font-weight: 400;
+        .comment .info .date {
+            color: #888;
         }
 
-        .add-comment-form {
-            margin-top: 20px;
+        .comment .content {
+            color: #333;
+            line-height: 1.4;
+            white-space: pre-wrap;
         }
 
-        .add-comment-form textarea {
+        .no-comments {
+            color: #888;
+        }
+
+        .add-comment {
+            margin-bottom: 30px;
+        }
+
+        .add-comment textarea {
             width: 100%;
-            height: 80px;
+            min-height: 100px;
             padding: 10px;
-            border: 1px solid #CCCCCC;
-            border-radius: 4px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
             resize: vertical;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            color: #333333;
-            font-weight: 400;
         }
 
-        .add-comment-form button {
-            margin-top: 10px;
-            padding: 8px 16px;
-            background-color: #333333;
-            color: #FFFFFF;
+        .add-comment button {
+            padding: 10px 20px;
+            background-color: #337ab7;
+            color: #fff;
             border: none;
-            border-radius: 4px;
             cursor: pointer;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            transition: background-color 0.3s ease;
         }
 
-        .add-comment-form button:hover {
-            background-color: #000000;
-        }
-
-        .footer {
-            text-align: center;
-            color: #666666;
-            font-size: 12px;
-            margin-top: 20px;
-            font-weight: 400;
+        .add-comment button:hover {
+            background-color: #286090;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header section -->
-        <div class="header">
-            <a class="logo" href="#">Computer Engineering Classwork Repository</a>
-            <!-- Navigation links -->
-            {% if user.is_authenticated %}
-                <div class="nav-links">
-                    <a class="nav-link" href="{% url 'home' %}">Dashboard</a>
-                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                </div>
-            {% else %}
-                <div class="nav-links">
-                    <a class="nav-link" href="{% url 'login' %}">Login</a>
-                    <a class="nav-link" href="{% url 'signup' %}">Sign Up</a>
-                </div>
-            {% endif %}
-        </div>
+    <h1>View Document</h1>
 
-        <!-- Document details -->
-        <div class="document-details">
-            <h1 class="document-title">{{ document.subject }}</h1>
-            <p class="document-info">Year Level: {{ document.year_level }}</p>
-            <p class="document-info">File: <a href="{{ document.file.url }}">{{ document.file.name }}</a></p>
-        </div>
-
-        <!-- PDF viewer -->
-        <div class="pdf-viewer">
-            <div id="pdf-container"></div>
-        </div>
-
-        <!-- Comments section -->
-        <div class="comments-section">
-            <h2>Comments</h2>
-            {% for comment in comments %}
-                <div class="comment">
-                    <p class="comment-content">{{ comment.content }}</p>
-                    <p class="comment-details">By {{ comment.user.email }} at {{ comment.created_at }}</p>
-                </div>
-            {% empty %}
-                <p>No comments yet.</p>
-            {% endfor %}
-
-            <div class="add-comment-form">
-                <form action="{% url 'comment_submit' document.id %}" method="post">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit">Submit</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Footer section -->
-        <div class="footer">
-            <p>&copy; 2023 Your Company. All rights reserved.</p>
-        </div>
+    <div class="pdf-preview">
+        <iframe src="{{ pdf_url }}"></iframe>
     </div>
 
-    <!-- Include the PDF.js library -->
-    <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+    {% if embedded_content %}
+        <div class="embedded-content">
+            {{ embedded_content|safe }}  <!-- Display the embedded content safely -->
+        </div>
+    {% else %}
+        <p>No embedded content available.</p>
+    {% endif %}
 
-    <script>
-        // Get the URL of the PDF file
-        const pdfUrl = "{{ document.file.url }}";
+    <h2>Comments</h2>
+    <div class="comments">
+        {% for comment in comments %}
+            <div class="comment">
+                <p><strong>{{ comment.user.email }} at {{ comment.created_at }}</strong></p>
+                <p>{{ comment.text }}</p>
+            </div>
+        {% empty %}
+            <p>No comments yet.</p>
+        {% endfor %}
+    </div>
 
-        // Fetch the PDF data and create a new PDF.js viewer
-        fetch(pdfUrl)
-            .then(response => response.arrayBuffer())
-            .then(data => {
-                // Create a new Uint8Array from the PDF data
-                const uint8Array = new Uint8Array(data);
-
-                // Create a blob from the Uint8Array
-                const blob = new Blob([uint8Array], { type: 'application/pdf' });
-
-                // Convert the blob to a data URL
-                const dataUrl = URL.createObjectURL(blob);
-
-                // Create a new PDF.js viewer
-                pdfjsLib.getDocument(dataUrl).promise.then(pdf => {
-                    const numPages = pdf.numPages;
-                    const pagesPromises = [];
-
-                    // Fetch each page and render it
-                    for (let i = 1; i <= numPages; i++) {
-                        pagesPromises.push(pdf.getPage(i));
-                    }
-
-                    Promise.all(pagesPromises).then(pages => {
-                        // Render each page onto a canvas and append it to the viewer container
-                        pages.forEach(page => {
-                            const viewport = page.getViewport({ scale: 1 });
-                            const canvas = document.createElement("canvas");
-                            const context = canvas.getContext("2d");
-                            canvas.width = viewport.width;
-                            canvas.height = viewport.height;
-                            const pdfPage = document.createElement("div");
-                            pdfPage.className = "pdf-page";
-                            pdfPage.appendChild(canvas);
-                            document.getElementById("pdf-container").appendChild(pdfPage);
-
-                            page.render({
-                                canvasContext: context,
-                                viewport: viewport
-                            });
-                        });
-                    });
-                });
-            });
-    </script>
+    <h2>Add Comment</h2>
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
 </body>
 </html>
