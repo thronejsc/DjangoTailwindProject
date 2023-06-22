@@ -27,12 +27,6 @@ def is_author(user):
     return False
 
 
-def is_editor(user):
-    if user.user_type == "EDITOR":
-        return True
-    return False
-
-
 def is_publisher(user):
     if user.user_type == "PUBLISHER":
         return True
@@ -52,12 +46,17 @@ def where_next(request):
     """Simple redirector to figure out where the user goes next."""
     if request.user.is_anonymous:
         return HttpResponse(reverse('login'))
+    elif request.user.is_admin:
+        # Allow admin users access to anything
+        return HttpResponseRedirect(reverse('admin:index'))
     elif request.user.user_type == "AUTHOR":
         return HttpResponseRedirect(reverse('author-profile'))
-    elif request.user.user_type == "EDITOR":
-        return HttpResponseRedirect(reverse('editor-profile'))
     elif request.user.user_type == "PUBLISHER":
         return HttpResponseRedirect(reverse('publisher-profile'))
+    else:
+        # Redirect for users without specific roles
+        return HttpResponse("Unauthorized")
+
 
 
 @user_passes_test(is_author)
@@ -87,7 +86,7 @@ def author_base(request):
     return render(request, 'author/author.html', context)
 
 
-@user_passes_test(is_editor)
+"""@user_passes_test(is_editor)
 def editor_base(request):
     articles_accepted = Article.objects.filter(state='Accepted').count()
     articles_in_queue = Article.objects.filter(state='Under Review').count()
@@ -111,7 +110,7 @@ def editor_base(request):
         'labels': labels,
         'data': data,
     }
-    return render(request, 'editor/editor.html', context)
+    return render(request, 'editor/editor.html', context)"""
 
 
 @user_passes_test(is_publisher)
@@ -319,7 +318,7 @@ def submit_article(request, journal_id):
         return render(request, 'author/article-form.html', {'form': form})
 
 
-@login_required
+"""@login_required
 @user_passes_test(is_editor)
 def article_list(request):
     pending_articles = Article.objects.filter(state=STAGE_UNDER_REVIEW)
@@ -330,10 +329,10 @@ def article_list(request):
         'accepted_articles': accepted_articles,
         'rejected_articles': rejected_articles,
     }
-    return render(request, 'editor/article-list.html', context)
+    return render(request, 'editor/article-list.html', context)"""
 
 
-@login_required
+"""@login_required
 @user_passes_test(is_editor)
 def review_pending_article(request, article_id):
     reviewed_article = get_object_or_404(Article, id=article_id)
@@ -353,7 +352,7 @@ def review_pending_article(request, article_id):
     else:
         form = ReviewForm()
         return render(request, 'editor/review-article.html', {'form': form, 'article': reviewed_article,
-                                                                'comments': reviewed_article.Editornotes.all()})
+                                                                'comments': reviewed_article.Editornotes.all()})"""
 
 
 @login_required
