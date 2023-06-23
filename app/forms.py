@@ -105,7 +105,10 @@ class DocumentForm(forms.ModelForm):
             if not file.name.endswith('.pdf'):
                 raise forms.ValidationError("Only PDF files are allowed.")
         return file
-    
+
+class ArticleSearchForm(forms.Form):
+    query = forms.CharField(label='Search by Title', max_length=100, required=False)
+
 class SearchForm(forms.Form):
     subject = forms.CharField(max_length=100)
     year_level = forms.IntegerField()

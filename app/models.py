@@ -26,16 +26,16 @@ class MyUserManager(BaseUserManager):
 
     def create_superuser(self, email, password):
         """
-        Creates and saves a superuser with the given email, date of
-        birth and password.
+        Creates and saves a superuser with the given email and password.
         """
         user = self.create_user(
-            email,
+            email=email,
             password=password,
         )
         user.is_admin = True
         user.save(using=self._db)
         return user
+
 
 
 class MyUser(AbstractBaseUser):
@@ -46,11 +46,10 @@ class MyUser(AbstractBaseUser):
         unique=True,
     )
     USER_TYPE_CHOICES = (
-        ('AUTHOR', 'author'),
-        ('EDITOR', 'editor'),
-        ('PUBLISHER', 'publisher'),
+    ('STUDENT', 'student'),
+    ('PUBLISHER', 'publisher'),
     )
-    user_type = models.CharField(choices=USER_TYPE_CHOICES, max_length=64, default='author')
+    user_type = models.CharField(choices=USER_TYPE_CHOICES, max_length=64, default='student')
     bio = models.TextField(null=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
@@ -63,8 +62,8 @@ class MyUser(AbstractBaseUser):
     def __str__(self):
         return self.email
 
-    def is_author(self):
-        return self.user_type=="AUTHOR"
+    def is_student(self):
+        return self.user_type=="STUDENT"
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
@@ -143,7 +142,7 @@ class Article(models.Model):
     journal = models.ForeignKey(Journal, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=500)
-    author = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    student = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     abstract = models.TextField()
     text = RichTextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -178,8 +177,9 @@ class DatabaseStorage(models.FileField):
 
 class Document(models.Model):
     subject = models.CharField(max_length=100)
-    year_level = models.IntegerField()
-    file = DatabaseStorage(upload_to='')
+    year_level = models.PositiveIntegerField()
+    file = models.FileField(upload_to='')
+    embedded_url = models.URLField(blank=True)
 
     def __str__(self):
         return self.file.name
@@ -188,6 +188,7 @@ class Document(models.Model):
         with open(self.file.path, 'rb') as file:
             content = file.read()
         return content
+
     
     
 

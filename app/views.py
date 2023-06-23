@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView
@@ -11,23 +11,18 @@ from app.models import MyUser, STAGE_UNDER_REVIEW, Journal, Article, STAGE_PUBLI
     STAGE_ACCEPTED
 
 from .models import Subject, Document
-from .forms import DocumentForm, CommentForm, SearchForm
+from .forms import DocumentForm, CommentForm, SearchForm, ArticleSearchForm
 from django.shortcuts import render, get_object_or_404
 from .models import Document
 from django.http import JsonResponse
 from django.utils import timezone
-
+from django.core.files.base import ContentFile
+import requests
 # ----DECORATOR
 
 
-def is_author(user):
-    if user.user_type == "AUTHOR":
-        return True
-    return False
-
-
-def is_editor(user):
-    if user.user_type == "EDITOR":
+def is_student(user):
+    if user.user_type == "STUDENT":
         return True
     return False
 
@@ -51,21 +46,26 @@ def where_next(request):
     """Simple redirector to figure out where the user goes next."""
     if request.user.is_anonymous:
         return HttpResponse(reverse('login'))
-    elif request.user.user_type == "AUTHOR":
-        return HttpResponseRedirect(reverse('author-profile'))
-    elif request.user.user_type == "EDITOR":
-        return HttpResponseRedirect(reverse('editor-profile'))
+    elif request.user.is_admin:
+        # Allow admin users access to anything
+        return HttpResponseRedirect(reverse('admin:index'))
+    elif request.user.user_type == "STUDENT":
+        return HttpResponseRedirect(reverse('student-profile'))
     elif request.user.user_type == "PUBLISHER":
         return HttpResponseRedirect(reverse('publisher-profile'))
+    else:
+        # Redirect for users without specific roles
+        raise Http404("Unauthorized")
 
 
-@user_passes_test(is_author)
-def author_base(request):
-    articles_accepted = Article.objects.filter(state='Accepted').filter(author=request.user).count()
-    articles_in_queue = Article.objects.filter(state='Under Review').filter(author=request.user).count()
-    articles_rejected = Article.objects.filter(state='Rejected').filter(author=request.user).count()
-    articles_published = Article.objects.filter(state='Published').filter(author=request.user).count()
-    articles = Article.objects.filter(author=request.user)
+
+@user_passes_test(is_student)
+def student_base(request):
+    articles_accepted = Article.objects.filter(state='Accepted').filter(student=request.user).count()
+    articles_in_queue = Article.objects.filter(state='Under Review').filter(student=request.user).count()
+    articles_rejected = Article.objects.filter(state='Rejected').filter(student=request.user).count()
+    articles_published = Article.objects.filter(state='Published').filter(student=request.user).count()
+    articles = Article.objects.filter(student=request.user)
     # print(articles_in_queue)
     labels = ["Articles In Peer Review","Articles Acepted","Articles Published","Articles Rejected"]
     data = []
@@ -83,16 +83,16 @@ def author_base(request):
         'labels': labels,
         'data': data,
     }
-    return render(request, 'author/author.html', context)
+    return render(request, 'student/student.html', context)
 
 
-@user_passes_test(is_editor)
+"""@user_passes_test(is_editor)
 def editor_base(request):
     articles_accepted = Article.objects.filter(state='Accepted').count()
     articles_in_queue = Article.objects.filter(state='Under Review').count()
     articles_rejected = Article.objects.filter(state='Rejected').count()
     articles_published = Article.objects.filter(state='Published').count()
-    articles = Article.objects.filter(author=request.user)
+    articles = Article.objects.filter(student=request.user)
     # print(articles_in_queue)
     labels = ["Articles In Peer Review","Articles Acepted","Articles Published","Articles Rejected"]
     data = []
@@ -110,23 +110,23 @@ def editor_base(request):
         'labels': labels,
         'data': data,
     }
-    return render(request, 'editor/editor.html', context)
+    return render(request, 'editor/editor.html', context)"""
 
 
 @user_passes_test(is_publisher)
 def publisher_base(request):
-    authors = MyUser.objects.filter(user_type='AUTHOR').count()
+    students = MyUser.objects.filter(user_type='STUDENT').count()
     editors = MyUser.objects.filter(user_type='EDITOR').count()
     articles_published = Article.objects.filter(state='Published').count()
     articles_accepted = Article.objects.filter(state='Accepted').count()
-    # print(authors,editors)
+    # print(STUDENTs,editors)
     labels = ["Articles Published","Articles Acepted"]
     data = []
     # labels.append
     data.append(articles_published)
     data.append(articles_accepted)
     context = {
-        'authors': authors,
+        'students': students,
         'editors': editors,
         'articles_published': articles_published,
         'articles_accepted': articles_accepted,
@@ -170,6 +170,18 @@ def article_view(request, article_id):
     }
     return render(request, template_name, context)
 
+def search_articles(request):
+    query = request.GET.get('query')
+    articles = []
+
+    if query:
+        articles = Article.objects.filter(
+            Q(title__icontains=query) | Q(student__name__icontains=query)
+        )
+
+    return render(request, 'search_article.html', {'articles': articles, 'query': query})
+
+
 def journal_search(request):
     template_name = 'journal_search.html'
     query = request.GET.get('q')
@@ -179,7 +191,7 @@ def journal_search(request):
         schoolworks = schoolworks.filter(
             Q(title__icontains=query) |
             Q(subject__icontains=query) |
-            Q(author__icontains=query)
+            Q(student__icontains=query)
         )
     
     context = {
@@ -194,12 +206,17 @@ def upload_document(request):
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
             document = form.save(commit=False)
+            file_content = request.FILES['file'].read()
+            file_name = request.FILES['file'].name
+            document.file.save(file_name, ContentFile(file_content))
+            document.file.close()  # Close the file after saving to the database
             document.save()
             return redirect('upload_document')
     else:
         form = DocumentForm()
     documents = Document.objects.all()
     return render(request, 'upload_document.html', {'form': form, 'documents': documents})
+
 
 def search_document(request):
     form = SearchForm()
@@ -215,9 +232,9 @@ def search_document(request):
             if not documents:
                 not_found = True
 
-    return render(request, 'author/search-form.html', {'form': form, 'documents': documents, 'not_found': not_found})
+    return render(request, 'student/search-form.html', {'form': form, 'documents': documents, 'not_found': not_found})
 
-@login_required  # Require user authentication to access this view
+@login_required
 def view_document(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
     comments = document.comments.all()
@@ -229,13 +246,34 @@ def view_document(request, document_id):
             comment.document = document
             comment.user = request.user
             comment.save()
-            return JsonResponse({'success': True})  # Return a JSON response indicating successful comment submission
-        else:
-            return JsonResponse({'success': False, 'errors': form.errors})  # Return a JSON response with form errors
+            return redirect('view_document', document_id=document_id)  # Redirect to the view_document page
     else:
         form = CommentForm()
 
-    return render(request, 'view_document.html', {'document': document, 'comments': comments, 'form': form})
+    # Assuming you have a FileField or ImageField in the Document model
+    pdf_file = document.file
+
+    # Generate the URL for the PDF file
+    pdf_url = request.build_absolute_uri(pdf_file.url)
+
+    embedded_url = document.embedded_url
+
+    # Check if embedded_url exists and raise 404 error if it cannot be fetched
+    if embedded_url:
+        try:
+            response = requests.get(embedded_url)
+            response.raise_for_status()
+        except requests.exceptions.RequestException:
+            raise Http404("Embedded URL not accessible")
+        except requests.exceptions.HTTPError as error:
+            raise Http404(f"Embedded URL returned {error.response.status_code} error")
+
+        # Debugging information
+        print(response.content)  # Print the content of the response for inspection
+
+    return render(request, 'view_document.html', {'document': document, 'comments': comments, 'form': form, 'pdf_url': pdf_url})
+
+
 
 def comment_submit(request, document_id):
     if request.method == 'POST':
@@ -271,7 +309,7 @@ def download_document(request, document_id):
 
         return response
 
-@user_passes_test(is_author)
+@user_passes_test(is_student)
 def submit_article(request, journal_id):
     if request.method == "POST":
         form = ArticleForm(request.POST)
@@ -280,19 +318,19 @@ def submit_article(request, journal_id):
             print(request.user)
             journal = get_object_or_404(Journal, id=journal_id)
             new_article = form.save(commit=False)
-            new_article.author = request.user
+            new_article.student = request.user
             new_article.journal = journal
             new_article.state = STAGE_UNDER_REVIEW
             print(new_article)
             new_article.save()
             # send_review_email()
-            return HttpResponseRedirect(reverse('author-profile'))
+            return HttpResponseRedirect(reverse('student-profile'))
     else:
         form = ArticleForm()
-        return render(request, 'author/article-form.html', {'form': form})
+        return render(request, 'student/article-form.html', {'form': form})
 
 
-@login_required
+"""@login_required
 @user_passes_test(is_editor)
 def article_list(request):
     pending_articles = Article.objects.filter(state=STAGE_UNDER_REVIEW)
@@ -303,10 +341,10 @@ def article_list(request):
         'accepted_articles': accepted_articles,
         'rejected_articles': rejected_articles,
     }
-    return render(request, 'editor/article-list.html', context)
+    return render(request, 'editor/article-list.html', context)"""
 
 
-@login_required
+"""@login_required
 @user_passes_test(is_editor)
 def review_pending_article(request, article_id):
     reviewed_article = get_object_or_404(Article, id=article_id)
@@ -326,7 +364,7 @@ def review_pending_article(request, article_id):
     else:
         form = ReviewForm()
         return render(request, 'editor/review-article.html', {'form': form, 'article': reviewed_article,
-                                                                'comments': reviewed_article.Editornotes.all()})
+                                                                'comments': reviewed_article.Editornotes.all()})"""
 
 
 @login_required
