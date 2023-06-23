@@ -16,71 +16,43 @@
     <title>Signup </title>
   </head>
   <body class="text-gray-800 antialiased">
-    <nav
-      class="top-0 absolute z-50 w-full flex flex-wrap items-center justify-between px-2 py-3 navbar-expand-lg"
-    >
-      <div
-        class="container px-4 mx-auto flex flex-wrap items-center justify-between"
-      >
-        <div
-          class="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start"
-        >
-          <a
-            class="text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-no-wrap uppercase text-white"
-            href="{% url 'home' %}"
-            >Home</a
-          ><button
-            class="cursor-pointer text-xl leading-none px-3 py-1 border border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none"
-            type="button"
-            onclick="toggleNavbar('example-collapse-navbar')"
-          >
-            <i class="text-white fas fa-bars"></i>
+    <nav id="header" class="fixed w-full z-30 top-0 text-white bg-transparent">
+      <div class="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2">
+        <div class="pl-4 flex items-center">
+          <a class="toggleColour text-white no-underline hover:no-underline font-bold text-2xl lg:text-4xl" href="#">
+            <!--Icon from: http://www.potlabicons.com/ -->
+            <svg class="h-8 fill-current inline" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
+              <style>@keyframes rotate{0%{transform:rotateZ(0)}to{transform:rotateZ(360deg)}}</style>
+              <g style="animation:rotate 3s cubic-bezier(.7,-.03,.26,1.05) both infinite;transform-origin:center center" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                <path stroke="#0A0A30" d="M5.262 15.329l.486.842a1.49 1.49 0 002.035.55 1.486 1.486 0 012.036.529c.128.216.197.463.2.714a1.493 1.493 0 001.493 1.536h.979a1.486 1.486 0 001.485-1.493 1.493 1.493 0 011.493-1.471c.252.002.498.071.714.2a1.493 1.493 0 002.036-.55l.521-.857a1.493 1.493 0 00-.542-2.036 1.493 1.493 0 010-2.586c.71-.41.952-1.318.543-2.028l-.493-.85a1.493 1.493 0 00-2.036-.579 1.479 1.479 0 01-2.029-.543 1.428 1.428 0 01-.2-.714c0-.825-.668-1.493-1.492-1.493h-.98c-.82 0-1.488.664-1.492 1.486a1.485 1.485 0 01-1.493 1.493 1.521 1.521 0 01-.714-.2 1.493 1.493 0 00-2.036.542l-.514.858a1.486 1.486 0 00.543 2.035 1.486 1.486 0 01.543 2.036c-.13.226-.317.413-.543.543a1.493 1.493 0 00-.543 2.028v.008z" clip-rule="evenodd"/>
+                <path stroke="#265BFF" d="M12.044 10.147a1.853 1.853 0 100 3.706 1.853 1.853 0 000-3.706z"/>
+              </g>
+            </svg>      
+            Computer Engineering Classwork Repository
+          </a>
+        </div>
+        <div class="block lg:hidden pr-4">
+          <button id="nav-toggle" class="flex items-center p-1 text-pink-800 hover:text-gray-900 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+            <svg class="fill-current h-6 w-6" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <title>Menu</title>
+              <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
+            </svg>
           </button>
         </div>
-        <div
-          class="lg:flex flex-grow items-center bg-white lg:bg-transparent lg:shadow-none hidden"
-          id="example-collapse-navbar"
-        >
-          <ul class="flex flex-col lg:flex-row list-none mr-auto">
-{#            <li class="flex items-center">#}
-{#              <a#}
-{#                class="lg:text-white lg:hover:text-gray-300 text-gray-800 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold"#}
-{#                href="https://www.creative-tim.com/learning-lab/tailwind-starter-kit#/login"#}
-{#                ><i#}
-{#                  class="lg:text-gray-300 text-gray-500 far fa-file-alt text-lg leading-lg mr-2"#}
-{#                ></i>#}
-{#                Docs</a#}
-{#              >#}
-{#            </li>#}
-          </ul>
-          <ul class="flex flex-col lg:flex-row list-none lg:ml-auto">
-{#            <li class="flex items-center">#}
-{#              <a#}
-{#                class="lg:text-white lg:hover:text-gray-300 text-gray-800 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold"#}
-{#                href="#pablo"#}
-{#                ><i#}
-{#                  class="lg:text-gray-300 text-gray-500 fab fa-facebook text-lg leading-lg "#}
-{#                ></i#}
-{#                ><span class="lg:hidden inline-block ml-2">Share</span></a#}
-{#              >#}
-{#            </li>#}
-
-
+        <div class="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden mt-2 lg:mt-0 bg-white lg:bg-transparent text-black p-4 lg:p-0 z-20" id="nav-content">
+          <ul class="list-reset lg:flex justify-end flex-1 items-center">
+            <li class="mr-3">
+              <a class="inline-block py-2 px-4 text-white font-bold no-underline" href="{% url 'home' %}">Home</a>
+            </li>
             <li class="flex items-center">
-              <button
-                class="bg-white text-gray-800 active:bg-gray-100 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3"
-                type="button"
-                style="transition: all 0.15s ease 0s;"
-              >
-                  <a href="{% url 'login' %}">
-                <i class="fas fa-arrow"></i> Log In
-                      </a>
-
+              <button class="bg-white text-gray-800 active:bg-gray-100 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3" type="button" style="transition: all 0.15s ease 0s;">
+                <a href="{% url 'login' %}"><i class="fas fa-arrow"></i>Login</a>
               </button>
             </li>
           </ul>
         </div>
       </div>
+      <hr class="border-b border-gray-100 opacity-25 my-0 py-0" />
     </nav>
     <main>
       <section class="absolute w-full h-full">
