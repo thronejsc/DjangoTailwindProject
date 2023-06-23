@@ -11,7 +11,7 @@ from app.models import MyUser, STAGE_UNDER_REVIEW, Journal, Article, STAGE_PUBLI
     STAGE_ACCEPTED
 
 from .models import Subject, Document
-from .forms import DocumentForm, CommentForm, SearchForm
+from .forms import DocumentForm, CommentForm, SearchForm, ArticleSearchForm
 from django.shortcuts import render, get_object_or_404
 from .models import Document
 from django.http import JsonResponse
@@ -21,8 +21,8 @@ import requests
 # ----DECORATOR
 
 
-def is_author(user):
-    if user.user_type == "AUTHOR":
+def is_student(user):
+    if user.user_type == "STUDENT":
         return True
     return False
 
@@ -49,23 +49,23 @@ def where_next(request):
     elif request.user.is_admin:
         # Allow admin users access to anything
         return HttpResponseRedirect(reverse('admin:index'))
-    elif request.user.user_type == "AUTHOR":
-        return HttpResponseRedirect(reverse('author-profile'))
+    elif request.user.user_type == "STUDENT":
+        return HttpResponseRedirect(reverse('student-profile'))
     elif request.user.user_type == "PUBLISHER":
         return HttpResponseRedirect(reverse('publisher-profile'))
     else:
         # Redirect for users without specific roles
-        return HttpResponse("Unauthorized")
+        raise Http404("Unauthorized")
 
 
 
-@user_passes_test(is_author)
-def author_base(request):
-    articles_accepted = Article.objects.filter(state='Accepted').filter(author=request.user).count()
-    articles_in_queue = Article.objects.filter(state='Under Review').filter(author=request.user).count()
-    articles_rejected = Article.objects.filter(state='Rejected').filter(author=request.user).count()
-    articles_published = Article.objects.filter(state='Published').filter(author=request.user).count()
-    articles = Article.objects.filter(author=request.user)
+@user_passes_test(is_student)
+def student_base(request):
+    articles_accepted = Article.objects.filter(state='Accepted').filter(student=request.user).count()
+    articles_in_queue = Article.objects.filter(state='Under Review').filter(student=request.user).count()
+    articles_rejected = Article.objects.filter(state='Rejected').filter(student=request.user).count()
+    articles_published = Article.objects.filter(state='Published').filter(student=request.user).count()
+    articles = Article.objects.filter(student=request.user)
     # print(articles_in_queue)
     labels = ["Articles In Peer Review","Articles Acepted","Articles Published","Articles Rejected"]
     data = []
@@ -83,7 +83,7 @@ def author_base(request):
         'labels': labels,
         'data': data,
     }
-    return render(request, 'author/author.html', context)
+    return render(request, 'student/student.html', context)
 
 
 """@user_passes_test(is_editor)
@@ -92,7 +92,7 @@ def editor_base(request):
     articles_in_queue = Article.objects.filter(state='Under Review').count()
     articles_rejected = Article.objects.filter(state='Rejected').count()
     articles_published = Article.objects.filter(state='Published').count()
-    articles = Article.objects.filter(author=request.user)
+    articles = Article.objects.filter(student=request.user)
     # print(articles_in_queue)
     labels = ["Articles In Peer Review","Articles Acepted","Articles Published","Articles Rejected"]
     data = []
@@ -115,18 +115,18 @@ def editor_base(request):
 
 @user_passes_test(is_publisher)
 def publisher_base(request):
-    authors = MyUser.objects.filter(user_type='AUTHOR').count()
+    students = MyUser.objects.filter(user_type='STUDENT').count()
     editors = MyUser.objects.filter(user_type='EDITOR').count()
     articles_published = Article.objects.filter(state='Published').count()
     articles_accepted = Article.objects.filter(state='Accepted').count()
-    # print(authors,editors)
+    # print(STUDENTs,editors)
     labels = ["Articles Published","Articles Acepted"]
     data = []
     # labels.append
     data.append(articles_published)
     data.append(articles_accepted)
     context = {
-        'authors': authors,
+        'students': students,
         'editors': editors,
         'articles_published': articles_published,
         'articles_accepted': articles_accepted,
@@ -170,6 +170,18 @@ def article_view(request, article_id):
     }
     return render(request, template_name, context)
 
+def search_articles(request):
+    query = request.GET.get('query')
+    articles = []
+
+    if query:
+        articles = Article.objects.filter(
+            Q(title__icontains=query) | Q(student__name__icontains=query)
+        )
+
+    return render(request, 'search_article.html', {'articles': articles, 'query': query})
+
+
 def journal_search(request):
     template_name = 'journal_search.html'
     query = request.GET.get('q')
@@ -179,7 +191,7 @@ def journal_search(request):
         schoolworks = schoolworks.filter(
             Q(title__icontains=query) |
             Q(subject__icontains=query) |
-            Q(author__icontains=query)
+            Q(student__icontains=query)
         )
     
     context = {
@@ -220,7 +232,7 @@ def search_document(request):
             if not documents:
                 not_found = True
 
-    return render(request, 'author/search-form.html', {'form': form, 'documents': documents, 'not_found': not_found})
+    return render(request, 'student/search-form.html', {'form': form, 'documents': documents, 'not_found': not_found})
 
 @login_required
 def view_document(request, document_id):
@@ -297,7 +309,7 @@ def download_document(request, document_id):
 
         return response
 
-@user_passes_test(is_author)
+@user_passes_test(is_student)
 def submit_article(request, journal_id):
     if request.method == "POST":
         form = ArticleForm(request.POST)
@@ -306,16 +318,16 @@ def submit_article(request, journal_id):
             print(request.user)
             journal = get_object_or_404(Journal, id=journal_id)
             new_article = form.save(commit=False)
-            new_article.author = request.user
+            new_article.student = request.user
             new_article.journal = journal
             new_article.state = STAGE_UNDER_REVIEW
             print(new_article)
             new_article.save()
             # send_review_email()
-            return HttpResponseRedirect(reverse('author-profile'))
+            return HttpResponseRedirect(reverse('student-profile'))
     else:
         form = ArticleForm()
-        return render(request, 'author/article-form.html', {'form': form})
+        return render(request, 'student/article-form.html', {'form': form})
 
 
 """@login_required
