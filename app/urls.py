@@ -7,7 +7,7 @@ from .views import SignUpView
 urlpatterns = [
     path('signup/', SignUpView.as_view(), name='signup'),
     path('wherenext/', views.where_next,name='where-next'),
-    path('author', views.author_base, name='author-profile'),
+    path('student', views.student_base, name='student-profile'),
     #path('editor', views.editor_base, name='editor-profile'),
     path('publisher', views.publisher_base, name='publisher-profile'),
 
@@ -18,6 +18,7 @@ urlpatterns = [
 
     #path('editor/article-list', views.article_list, name='article-list'),
     #path('editor/article-list/pending/<int:article_id>', views.review_pending_article, name='review_article'),
+    path('searchart/', views.search_articles, name='search_articles'),
 
     path('publisher/article-list', views.publisher_article_list, name='publisher-article-list'),
     path('publisher/article-list/accepted/<int:article_id>', views.publisher_review, name='publisher_article'),
