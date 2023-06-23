@@ -120,8 +120,8 @@
     <div class="comments">
         {% for comment in comments %}
             <div class="comment">
+                <p>{{ comment.content }}</p>
                 <p><strong>{{ comment.user.email }} at {{ comment.created_at }}</strong></p>
-                <p>{{ comment.text }}</p>
             </div>
         {% empty %}
             <p>No comments yet.</p>

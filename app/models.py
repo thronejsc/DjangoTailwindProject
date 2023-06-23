@@ -175,11 +175,16 @@ class DatabaseStorage(models.FileField):
     def generate_filename(self, instance, filename):
         return filename
 
+
+
 class Document(models.Model):
     subject = models.CharField(max_length=100)
     year_level = models.PositiveIntegerField()
     file = models.FileField(upload_to='')
+    brief_info = models.CharField(default='', max_length=255)
     embedded_url = models.URLField(blank=True)
+    uploader = models.ForeignKey(MyUser, on_delete=models.CASCADE, default=12)
+
 
     def __str__(self):
         return self.file.name
@@ -189,7 +194,8 @@ class Document(models.Model):
             content = file.read()
         return content
 
-    
+    def get_description(self):
+        return f"Subject: {self.subject}\n, Year Level: {self.year_level}\n, Brief Info: {self.brief_info}\n, (Uploaded By:{self.uploader})"
     
 
 class Comment(models.Model):

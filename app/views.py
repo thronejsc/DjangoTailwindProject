@@ -201,11 +201,13 @@ def journal_search(request):
     
     return render(request, template_name, context)
 
+@login_required
 def upload_document(request):
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
             document = form.save(commit=False)
+            document.uploader = request.user  # Assign the current user as the uploader
             file_content = request.FILES['file'].read()
             file_name = request.FILES['file'].name
             document.file.save(file_name, ContentFile(file_content))
@@ -217,7 +219,7 @@ def upload_document(request):
     documents = Document.objects.all()
     return render(request, 'upload_document.html', {'form': form, 'documents': documents})
 
-
+@login_required
 def search_document(request):
     form = SearchForm()
     documents = []
@@ -233,6 +235,7 @@ def search_document(request):
                 not_found = True
 
     return render(request, 'student/search-form.html', {'form': form, 'documents': documents, 'not_found': not_found})
+
 
 @login_required
 def view_document(request, document_id):
