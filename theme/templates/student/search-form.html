@@ -77,7 +77,7 @@
         }
 
 
-        // Custom stuffs from my tailwind.js
+        Custom stuffs from my tailwind.js/
            .bg-brick-lightest,
            .hover\:bg-brick-lightest:hover {
                background-color: #dbcdcc;
@@ -138,8 +138,8 @@
             background-color: #d9d5c3;
         }
 
-        .bg-cream-darker,
-        color: #e0e0e0;
+        .bg-cream-darker, {
+            color: #e0e0e0;
         }
 
         .md\:text-gold-lighter,
@@ -1043,15 +1043,18 @@
           </div>
         {% endfor %}
         {% if not_found %}
-            <p>No documents found.</p>
-        {% elif documents %}
-            <h2>Search Results</h2>
-            <ul>
-                {% for document in documents %}
-                    <li><a href="{% url 'view_document' document.id %}">{{ document }}</a></li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+        <p>No documents found.</p>
+    {% elif documents %}
+        <h2>Search Results</h2>
+        <ul>
+            {% for document in documents %}
+                <li>
+                    <a href="{% url 'view_document' document.id %}">{{ document }}</a><br>
+                    Description: {{ document.get_description }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
       </div>
     </div>
 
