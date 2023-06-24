@@ -101,10 +101,10 @@ class DocumentForm(forms.ModelForm):
 
     def clean_file(self):
         file = self.cleaned_data.get('file')
-        if file:
-            if not file.name.endswith('.pdf'):
-                raise forms.ValidationError("Only PDF files are allowed.")
+        if file and not file.name.endswith('.pdf'):
+            raise forms.ValidationError("Only PDF files are allowed.")
         return file
+
 
 class ArticleSearchForm(forms.Form):
     query = forms.CharField(label='Search by Title', max_length=100, required=False)

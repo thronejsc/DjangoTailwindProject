@@ -1,138 +1,191 @@
-<!-- view_document.html -->
-
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
-    <title>View Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document Details</title>
+    <link rel="stylesheet" href="{% static 'css/styles.min.css' %}">
     <style>
-        /* CSS Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* CSS styles go here */
         body {
+            background-color: #f1f5f9;
             font-family: Arial, sans-serif;
-            background-color: #f2f8fd;
-            padding: 20px;
         }
 
         .container {
             max-width: 800px;
             margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            color: #337ab7;
-            margin-bottom: 20px;
+            color: #1a202c;
+            font-size: 24px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #d2d6dc;
         }
 
         .pdf-preview {
-            margin-bottom: 30px;
-        }
-
-        .pdf-preview iframe {
-            width: 100%;
-            height: 500px;
-            border: none;
+            margin-bottom: 20px;
         }
 
         .comments {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .comment {
-            background-color: #fff;
-            border: 1px solid #ccc;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 5px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #d2d6dc;
+            border-radius: 4px;
+            background-color: #f8fafc;
         }
 
         .comment .info {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
+            color: #718096;
         }
 
-        .comment .info .email {
-            color: #337ab7;
-            margin-right: 10px;
+        .comment .email {
+            font-weight: bold;
         }
 
-        .comment .info .date {
-            color: #888;
+        .comment .date {
+            font-size: 12px;
         }
 
         .comment .content {
-            color: #333;
-            line-height: 1.4;
-            white-space: pre-wrap;
+            color: #4a5568;
         }
 
         .no-comments {
-            color: #888;
-        }
-
-        .add-comment {
-            margin-bottom: 30px;
+            color: #718096;
         }
 
         .add-comment textarea {
             width: 100%;
-            min-height: 100px;
+            height: 100px;
             padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            resize: vertical;
+            border: 1px solid #d2d6dc;
+            border-radius: 4px;
+            resize: none;
         }
 
         .add-comment button {
-            padding: 10px 20px;
-            background-color: #337ab7;
-            color: #fff;
+            background-color: #4299e1;
+            color: #ffffff;
+            padding: 8px 16px;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
         }
 
         .add-comment button:hover {
-            background-color: #286090;
+            background-color: #3182ce;
+        }
+
+        .download-comments-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .download-comments-container .btn-primary {
+            background-color: #4299e1;
+            color: #ffffff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .download-comments-container .btn-primary:hover {
+            background-color: #3182ce;
         }
     </style>
 </head>
 <body>
-    <h1>View Document</h1>
+    <div class="container">
+        <h1>{{ document.subject }}</h1>
 
-    <div class="pdf-preview">
-        <iframe src="{{ pdf_url }}"></iframe>
-    </div>
-
-    {% if embedded_content %}
-        <div class="embedded-content">
-            {{ embedded_content|safe }}  <!-- Display the embedded content safely -->
+        <div class="pdf-preview">
+            <div id="pdf-viewer"></div>
         </div>
-    {% else %}
-        <p>No embedded content available.</p>
-    {% endif %}
 
-    <h2>Comments</h2>
-    <div class="comments">
-        {% for comment in comments %}
-            <div class="comment">
-                <p>{{ comment.content }}</p>
-                <p><strong>{{ comment.user.email }} at {{ comment.created_at }}</strong></p>
-            </div>
-        {% empty %}
-            <p>No comments yet.</p>
-        {% endfor %}
+        <div class="comments">
+            <h2>Comments</h2>
+
+            {% for comment in comments %}
+                <div class="comment">
+                    <div class="info">
+                        <span class="email">{{ comment.user.email }}</span>
+                        <span class="date">{{ comment.created_at }}</span>
+                    </div>
+                    <div class="content">{{ comment.text }}</div>
+                </div>
+            {% empty %}
+                <p class="no-comments">No comments yet.</p>
+            {% endfor %}
+        </div>
+
+        <div class="add-comment">
+            <h2>Add Comment</h2>
+            <form method="POST" action="">
+                {% csrf_token %}
+                <textarea name="comment" id="comment" placeholder="Enter your comment" required></textarea>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <div class="download-comments-container">
+            <a href="{% url 'download_document' document.id %}" class="btn btn-primary">Download</a>
+        </div>
     </div>
 
-    <h2>Add Comment</h2>
-    <form method="POST" action="">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
-    </form>
+    <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+    <script>
+        const pdfUrl = "{{ document.file.url }}";
+        const viewerContainer = document.getElementById("pdf-viewer");
+
+        pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
+            const numPages = pdf.numPages;
+            const pagesPromises = [];
+
+            for (let i = 1; i <= numPages; i++) {
+                pagesPromises.push(pdf.getPage(i));
+            }
+
+            Promise.all(pagesPromises).then(pages => {
+                let maxPageWidth = 0;
+
+                pages.forEach(page => {
+                    const viewport = page.getViewport({ scale: 1 });
+                    maxPageWidth = Math.max(maxPageWidth, viewport.width);
+                });
+
+                pages.forEach(page => {
+                    const viewport = page.getViewport({ scale: maxPageWidth / viewerContainer.clientWidth });
+                    const canvas = document.createElement("canvas");
+                    const context = canvas.getContext("2d");
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+                    viewerContainer.appendChild(canvas);
+
+                    page.render({
+                        canvasContext: context,
+                        viewport: viewport
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 </html>
