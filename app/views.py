@@ -160,7 +160,7 @@ def journal_view(request, journal_id):
     }
     return render(request, template_name, context)
 
-
+@login_required
 def article_view(request, article_id):
     template_name = 'article-detail.html'
     article = get_object_or_404(Article, id=article_id)
@@ -174,15 +174,29 @@ def article_view(request, article_id):
 
 @login_required
 def search_articles(request):
-    query = request.GET.get('query')
-    articles = []
+    form = ArticleSearchForm(request.GET or None)
+    articles = Article.objects.all()
 
-    if query:
-        articles = Article.objects.filter(
-            Q(title__icontains=query) | Q(student__name__icontains=query)
-        )
+    if form.is_valid():
+        query = form.cleaned_data['query']
+        search_option = form.cleaned_data['search_option']
 
-    return render(request, 'search_article.html', {'articles': articles, 'query': query})
+        if search_option == 'text':
+            # Search articles by text
+            articles = articles.filter(text__icontains=query)
+        elif search_option == 'title':
+            # Search articles by title
+            articles = articles.filter(title__icontains=query)
+
+    context = {
+        'form': form,
+    }
+
+    if articles.exists():
+        context['articles'] = articles
+
+    return render(request, 'search_article.html', context)
+
 
 @login_required
 def journal_search(request):

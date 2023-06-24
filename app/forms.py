@@ -115,7 +115,12 @@ class DocumentForm(forms.ModelForm):
         return file
 
 class ArticleSearchForm(forms.Form):
-    query = forms.CharField(label='Search by Title', max_length=100, required=False)
+    SEARCH_CHOICES = (
+        ('text', 'Search by Text'),
+        ('title', 'Search by Title'),
+    )
+    query = forms.CharField(label='Search', max_length=100, required=False)
+    search_option = forms.ChoiceField(label='Search Option', choices=SEARCH_CHOICES)
 
 class SearchForm(forms.Form):
     subject = forms.CharField(max_length=100)

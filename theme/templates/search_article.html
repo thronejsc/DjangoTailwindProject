@@ -26,6 +26,14 @@
         .btn {
             padding: 10px 20px;
             font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
         }
 
         .article-list {
@@ -34,16 +42,26 @@
         }
 
         .article-list li {
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f9f9f9;
         }
 
         .article-list li a {
             text-decoration: none;
+            color: #333;
+            font-weight: bold;
         }
 
-        p {
+        .article-list li p {
+            margin-top: 5px;
+        }
+
+        p.no-results {
             text-align: center;
             margin: 20px 0;
+            color: #666;
         }
     </style>
 </head>
@@ -54,6 +72,13 @@
             <div class="form-group">
                 <input class="form-control" type="text" name="query" placeholder="Search Articles">
             </div>
+            <div class="form-group">
+                <label for="search_option">Search Option:</label>
+                <select id="search_option" name="search_option" class="form-control">
+                    <option value="text">Search by Text</option>
+                    <option value="title">Search by Title</option>
+                </select>
+            </div>
             <button class="btn btn-primary" type="submit">Search</button>
         </form>
 
@@ -63,13 +88,13 @@
                 {% for article in articles %}
                     <li>
                         <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
-                        <p>{{ article.abstract }}</p> <!-- Add the article description/abstract here -->
-                        <p>Author: {{ article.student.name }}</p> <!-- Add the author/uploader name here -->
+                        <p>{{ article.abstract }}</p>
+                        <p>Author: {{ article.student.name }}</p>
                     </li>
                 {% endfor %}
             </ul>
         {% else %}
-            <p>No articles found.</p>
+            <p class="no-results">No articles found.</p>
         {% endif %}
     </div>
 </body>
