@@ -382,3 +382,11 @@ def publisher_review(request, article_id):
             'article': article
         }
         return render(request, 'publisher/review-article.html', context)
+
+@login_required
+def document_list(request):
+    documents = Document.objects.all()
+    context = {
+        'documents': documents
+    }
+    return render(request, 'document-list.html', context)
