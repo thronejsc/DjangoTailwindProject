@@ -27,5 +27,6 @@ urlpatterns = [
     path('searchdoc/', views.search_document, name='search_document'),
     path('document/<int:document_id>/', views.view_document, name='view_document'),
     path('document/<int:document_id>/comment_submit/', views.comment_submit, name='comment_submit'),
+    path('documents/<int:document_id>/download/', views.download_document, name='download_document'),
 
 ]

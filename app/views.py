@@ -18,6 +18,8 @@ from django.http import JsonResponse
 from django.utils import timezone
 from django.core.files.base import ContentFile
 import requests
+from django.conf import settings
+import os
 # ----DECORATOR
 
 
@@ -170,6 +172,7 @@ def article_view(request, article_id):
     }
     return render(request, template_name, context)
 
+@login_required
 def search_articles(request):
     query = request.GET.get('query')
     articles = []
@@ -181,7 +184,7 @@ def search_articles(request):
 
     return render(request, 'search_article.html', {'articles': articles, 'query': query})
 
-
+@login_required
 def journal_search(request):
     template_name = 'journal_search.html'
     query = request.GET.get('q')
@@ -208,16 +211,21 @@ def upload_document(request):
         if form.is_valid():
             document = form.save(commit=False)
             document.uploader = request.user  # Assign the current user as the uploader
-            file_content = request.FILES['file'].read()
-            file_name = request.FILES['file'].name
-            document.file.save(file_name, ContentFile(file_content))
-            document.file.close()  # Close the file after saving to the database
-            document.save()
-            return redirect('upload_document')
+
+            # Check if the file field has already been processed by the form
+            if form.cleaned_data['file']:
+                file = form.cleaned_data['file']
+                if not file.name.endswith('.pdf'):
+                    form.add_error('file', 'Only PDF files are allowed.')
+                else:
+                    document.file = file
+                    document.save()
+                    return redirect('upload_document')
     else:
         form = DocumentForm()
     documents = Document.objects.all()
     return render(request, 'upload_document.html', {'form': form, 'documents': documents})
+
 
 @login_required
 def search_document(request):
@@ -253,28 +261,11 @@ def view_document(request, document_id):
     else:
         form = CommentForm()
 
-    # Assuming you have a FileField or ImageField in the Document model
-    pdf_file = document.file
-
     # Generate the URL for the PDF file
-    pdf_url = request.build_absolute_uri(pdf_file.url)
-
-    embedded_url = document.embedded_url
-
-    # Check if embedded_url exists and raise 404 error if it cannot be fetched
-    if embedded_url:
-        try:
-            response = requests.get(embedded_url)
-            response.raise_for_status()
-        except requests.exceptions.RequestException:
-            raise Http404("Embedded URL not accessible")
-        except requests.exceptions.HTTPError as error:
-            raise Http404(f"Embedded URL returned {error.response.status_code} error")
-
-        # Debugging information
-        print(response.content)  # Print the content of the response for inspection
+    pdf_url = document.file.url
 
     return render(request, 'view_document.html', {'document': document, 'comments': comments, 'form': form, 'pdf_url': pdf_url})
+
 
 
 
@@ -296,6 +287,7 @@ def comment_submit(request, document_id):
     else:
         return redirect('view_document', document_id=document_id)  # Redirect to the view_document page for invalid request method
 
+@login_required
 def download_document(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 

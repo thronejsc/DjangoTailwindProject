@@ -61,7 +61,11 @@
             <h2>Search Results for "{{ query }}"</h2>
             <ul class="article-list">
                 {% for article in articles %}
-                    <li><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></li>
+                    <li>
+                        <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+                        <p>{{ article.abstract }}</p> <!-- Add the article description/abstract here -->
+                        <p>Author: {{ article.student.name }}</p> <!-- Add the author/uploader name here -->
+                    </li>
                 {% endfor %}
             </ul>
         {% else %}
