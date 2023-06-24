@@ -131,7 +131,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 # MEDIA'
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
-DEFAULT_FILE_STORAGE = 'chronicle.custom_storage.DatabaseOnlyStorage'
+"""DEFAULT_FILE_STORAGE = 'chronicle.custom_storage.DatabaseOnlyStorage'"""
 
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
