@@ -178,6 +178,7 @@ class DatabaseStorage(models.FileField):
 
 
 class Document(models.Model):
+    title = models.CharField(default = '', max_length=255)
     subject = models.CharField(max_length=100)
     year_level = models.PositiveIntegerField()
     file = models.FileField(upload_to='')
