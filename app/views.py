@@ -267,25 +267,24 @@ def view_document(request, document_id):
     return render(request, 'view_document.html', {'document': document, 'comments': comments, 'form': form, 'pdf_url': pdf_url})
 
 
-
-
 def comment_submit(request, document_id):
+    document = get_object_or_404(Document, pk=document_id)
+
     if request.method == 'POST':
-        document = get_object_or_404(Document, pk=document_id)
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
             comment.document = document
             comment.user = request.user
-            comment.created_at = timezone.now()
             comment.save()
             return redirect('view_document', document_id=document_id)  # Redirect to the view_document page
-        else:
-            form = CommentForm()  # Clear the form for a new comment
-            comments = document.comments.all()
-            return render(request, 'view_document.html', {'document': document, 'comments': comments, 'form': form})
     else:
-        return redirect('view_document', document_id=document_id)  # Redirect to the view_document page for invalid request method
+        form = CommentForm()
+
+    comments = document.comments.all()
+
+    return render(request, 'view_document.html', {'document': document, 'comments': comments, 'form': form})
+
 
 @login_required
 def download_document(request, document_id):
