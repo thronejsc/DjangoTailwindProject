@@ -3,3 +3,8 @@
 *.pyc
 *.pyc
 *.pyc
+db.sqlite3
+chronicle/__pycache__/wsgi.cpython-311.pyc
+app/__pycache__/views.cpython-311.pyc
+app/__pycache__/urls.cpython-311.pyc
+app/__pycache__/forms.cpython-311.pyc
