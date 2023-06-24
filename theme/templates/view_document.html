@@ -70,7 +70,17 @@
             color: #718096;
         }
 
-        .add-comment textarea {
+        .add-comment-section {
+            margin-bottom: 20px;
+        }
+
+        .add-comment-section label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .add-comment-section textarea {
             width: 100%;
             height: 100px;
             padding: 10px;
@@ -79,7 +89,7 @@
             resize: none;
         }
 
-        .add-comment button {
+        .add-comment-section button {
             background-color: #4299e1;
             color: #ffffff;
             padding: 8px 16px;
@@ -88,7 +98,7 @@
             cursor: pointer;
         }
 
-        .add-comment button:hover {
+        .add-comment-section button:hover {
             background-color: #3182ce;
         }
 
@@ -129,19 +139,22 @@
                         <span class="email">{{ comment.user.email }}</span>
                         <span class="date">{{ comment.created_at }}</span>
                     </div>
-                    <div class="content">{{ comment.text }}</div>
+                    <div class="content">{{ comment.content }}</div>
                 </div>
             {% empty %}
                 <p class="no-comments">No comments yet.</p>
             {% endfor %}
         </div>
 
-        <div class="add-comment">
-            <h2>Add Comment</h2>
-            <form method="POST" action="">
+        <div class="add-comment-section">
+            <h2>Add a Comment</h2>
+            <form method="post">
                 {% csrf_token %}
-                <textarea name="comment" id="comment" placeholder="Enter your comment" required></textarea>
-                <button type="submit">Submit</button>
+                <div class="form-group">
+                    <label for="{{ form.content.id_for_label }}">Comment:</label>
+                    {{ form.content }}
+                </div>
+                <button class="btn btn-primary" type="submit">Submit</button>
             </form>
         </div>
 

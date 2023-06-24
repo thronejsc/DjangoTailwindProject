@@ -95,16 +95,24 @@ class ArticleFormFinal(forms.ModelForm):
         }
 
 class DocumentForm(forms.ModelForm):
+    YEAR_LEVEL_CHOICES = [
+        (1, '1'),
+        (2, '2'),
+        (3, '3'),
+        (4, '4'),
+    ]
+
+    year_level = forms.ChoiceField(choices=YEAR_LEVEL_CHOICES)
+
     class Meta:
         model = Document
-        fields = ('subject', 'year_level', 'file')
+        exclude = ('embedded_url', 'uploader')
 
     def clean_file(self):
         file = self.cleaned_data.get('file')
         if file and not file.name.endswith('.pdf'):
             raise forms.ValidationError("Only PDF files are allowed.")
         return file
-
 
 class ArticleSearchForm(forms.Form):
     query = forms.CharField(label='Search by Title', max_length=100, required=False)
