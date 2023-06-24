@@ -209,21 +209,13 @@ def upload_document(request):
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
-            document = form.save(commit=False)
-            document.uploader = request.user  # Assign the current user as the uploader
-
-            # Check if the file field has already been processed by the form
-            if form.cleaned_data['file']:
-                file = form.cleaned_data['file']
-                if not file.name.endswith('.pdf'):
-                    form.add_error('file', 'Only PDF files are allowed.')
-                else:
-                    document.file = file
-                    document.save()
-                    return redirect('upload_document')
+            form.save()
+            return redirect('upload_document')  # Redirect to the upload_document page
     else:
         form = DocumentForm()
+
     documents = Document.objects.all()
+
     return render(request, 'upload_document.html', {'form': form, 'documents': documents})
 
 
