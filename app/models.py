@@ -193,6 +193,10 @@ class Document(models.Model):
         with open(self.file.path, 'rb') as file:
             content = file.read()
         return content
+    
+    def get_absolute_url(self):
+        return f"/profiles/document/{self.id}/"
+
 
     def get_description(self):
         return f"Subject: {self.subject}\n, Year Level: {self.year_level}\n, Brief Info: {self.brief_info}\n, (Uploaded By:{self.uploader})"

@@ -143,41 +143,41 @@
 {#            </div>#}
 {#        </div>#}
 {#    {% endfor %}#}
-<p class="text-2xl text-gray-700 text-center my-10">Schoolworks</p>
+<p class="text-2xl text-gray-700 text-center my-10">Documents</p>
 
 <div class="container my-12 mx-auto px-4 md:px-12">
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-    {% for journal in journals %}
-    <!-- Column -->
-    <div class="max-w-sm rounded-lg overflow-hidden shadow-lg">
-      <a href="{{ journal.get_absolute_url }}">
-        <img alt="Journal Image" class="w-full h-56 object-cover" src="{{ journal.j_image.url }}">
-      </a>
-      <div class="px-6 py-4">
-        <div class="font-bold text-lg mb-2">
-          <a class="no-underline hover:underline text-black" href="{{ journal.get_absolute_url }}">
-            {{ journal.code }}
+  <ul class="space-y-6">
+    {% for document in documents %}
+    <li>
+      <div class="max-w-sm rounded-lg overflow-hidden shadow-lg">
+        <a href="{{ document.get_absolute_url }}">
+          <!--<img alt="Journal Image" class="w-full h-56 object-cover" src="{{ journal.j_image.url }}"> -->
+        </a>
+        <div class="px-6 py-4">
+          <div class="font-bold text-lg mb-2">
+            <a class="no-underline hover:underline text-black" href="{{ document.get_absolute_url }}">
+              {{ document.subject }}
+            </a>
+          </div>
+          <p class="text-gray-700 text-sm">{{ document.year_level }}</p>
+        </div>
+        <div class="px-6 py-4 flex items-center justify-between">
+          <a class="flex items-center no-underline hover:underline text-black" href="{{ document.get_absolute_url }}">
+            <!-- <img alt="Placeholder" class="block rounded-full" src="https://picsum.photos/32/32/?random"> -->
+            <p class="ml-2 text-sm">{{ document.brief_info }}</p>
+          </a>
+          <a class="no-underline text-gray-700 hover:text-red-700" href="#">
+            <span class="hidden">Like</span>
+            <!-- <i class="fa fa-heart"></i> -->
           </a>
         </div>
-        <p class="text-gray-700 text-sm">{{ journal.subject }}</p>
       </div>
-      <div class="px-6 py-4 flex items-center justify-between">
-        <a class="flex items-center no-underline hover:underline text-black" href="{{ journal.get_absolute_url }}">
-          <!-- <img alt="Placeholder" class="block rounded-full" src="https://picsum.photos/32/32/?random"> -->
-          <p class="ml-2 text-sm">{{ journal.subject }}</p>
-        </a>
-        <a class="no-underline text-gray-700 hover:text-red-700" href="#">
-          <span class="hidden">Like</span>
-          <!-- <i class="fa fa-heart"></i> -->
-        </a>
-      </div>
-    </div>
-    <!-- END Column -->
+    </li>
     {% endfor %}
-
-  </div>
+  </ul>
 </div>
+
+
 
 </body>
 </html>
