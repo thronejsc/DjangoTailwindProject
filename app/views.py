@@ -88,7 +88,7 @@ def student_base(request):
     return render(request, 'student/student.html', context)
 
 
-"""@user_passes_test(is_editor)
+"""@user_passes_test(is_publisher)
 def editor_base(request):
     articles_accepted = Article.objects.filter(state='Accepted').count()
     articles_in_queue = Article.objects.filter(state='Under Review').count()
@@ -117,27 +117,32 @@ def editor_base(request):
 
 @user_passes_test(is_publisher)
 def publisher_base(request):
+    articles_accepted = Article.objects.filter(state='Accepted').count()
+    articles_in_queue = Article.objects.filter(state='Under Review').count()
+    articles_rejected = Article.objects.filter(state='Rejected').count()
+    articles_published = Article.objects.filter(state='Published').count()
+    articles = Article.objects.filter(student=request.user)
+
     students = MyUser.objects.filter(user_type='STUDENT').count()
     editors = MyUser.objects.filter(user_type='EDITOR').count()
-    articles_published = Article.objects.filter(state='Published').count()
-    articles_accepted = Article.objects.filter(state='Accepted').count()
-    # print(STUDENTs,editors)
-    labels = ["Articles Published","Articles Acepted"]
-    data = []
-    # labels.append
-    data.append(articles_published)
-    data.append(articles_accepted)
+
+    labels = ["Articles In Peer Review", "Articles Accepted", "Articles Published", "Articles Rejected"]
+    data = [articles_in_queue, articles_accepted, articles_published, articles_rejected]
+
     context = {
         'students': students,
         'editors': editors,
         'articles_published': articles_published,
         'articles_accepted': articles_accepted,
+        'articles_in_queue': articles_in_queue,
+        'articles_rejected': articles_rejected,
+        'articles': articles,
         'labels': labels,
         'data': data,
     }
-    # print(labels)
-    # print(data)
-    return render(request, 'publisher/publisher.html',context)
+
+    return render(request, 'publisher/publisher.html', context)
+
 
 
 def journal_list(request):
@@ -330,8 +335,8 @@ def submit_article(request, journal_id):
         return render(request, 'student/article-form.html', {'form': form})
 
 
-"""@login_required
-@user_passes_test(is_editor)
+@login_required
+@user_passes_test(is_publisher)
 def article_list(request):
     pending_articles = Article.objects.filter(state=STAGE_UNDER_REVIEW)
     accepted_articles = Article.objects.filter(state=STAGE_ACCEPTED)
@@ -341,11 +346,11 @@ def article_list(request):
         'accepted_articles': accepted_articles,
         'rejected_articles': rejected_articles,
     }
-    return render(request, 'editor/article-list.html', context)"""
+    return render(request, 'publisher/article-list.html(e)', context)
 
 
-"""@login_required
-@user_passes_test(is_editor)
+@login_required
+@user_passes_test(is_publisher)
 def review_pending_article(request, article_id):
     reviewed_article = get_object_or_404(Article, id=article_id)
     if request.method == 'POST':
@@ -363,8 +368,8 @@ def review_pending_article(request, article_id):
             return HttpResponseRedirect(reverse('article-list'))
     else:
         form = ReviewForm()
-        return render(request, 'editor/review-article.html', {'form': form, 'article': reviewed_article,
-                                                                'comments': reviewed_article.Editornotes.all()})"""
+        return render(request, 'publisher/review-article(e).html', {'form': form, 'article': reviewed_article,
+                                                                'comments': reviewed_article.Editornotes.all()})
 
 
 @login_required
@@ -378,7 +383,8 @@ def publisher_article_list(request):
     }
     return render(request, 'publisher/article-list.html', context)
 
-
+@login_required
+@user_passes_test(is_publisher)
 def publisher_review(request, article_id):
     article = get_object_or_404(Article, id=article_id)
     if request.method == "POST":
