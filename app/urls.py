@@ -30,4 +30,5 @@ urlpatterns = [
     path('documents/<int:document_id>/download/', views.download_document, name='download_document'),
     path('documents/list/', views.document_list, name='document-list'),
     path('logout', views.logout_view, name='logout'),
+    path('social-auth/', include('social_django.urls', namespace='social')),
 ]
