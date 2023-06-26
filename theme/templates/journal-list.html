@@ -83,10 +83,10 @@
           </li>
           {% if user.is_authenticated %}
           <li class="mr-3">
-            <a class="inline-block text-black no-underline hover:text-gray-800 hover:text-underline py-2 px-4" href="{% url 'search_document' %}">Search</a>
+            <a class="inline-block text-black no-underline hover:text-gray-800 hover:text-underline py-2 px-4" href="{% url 'search_articles' %}">Search</a>
           </li>
           <li class="mr-3">
-            <a class="inline-block text-black no-underline hover:text-gray-800 hover:text-underline py-2 px-4" href={% url 'where-next' %}>Dashboard</a>
+            <a class="inline-block text-black no-underline hover:text-gray-800 hover:text-underline py-2 px-4" href="{% url 'where-next' %}">Dashboard</a>
           </li>
           <li class="mr-3">
             <a class="inline-block text-black no-underline hover:text-gray-800 hover:text-underline py-2 px-4" href="#">Log Out</a>
