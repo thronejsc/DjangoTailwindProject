@@ -121,17 +121,17 @@
           <h1 class="my-4 text-5xl font-bold leading-tight slide-in-h1">
             Empowering Knowledge
           </h1>
-          <p class="leading-normal text-2xl mb-8 slide-in-sub">
+          <p class="leading-normal text-2xl mb-8 slide-in-sub text-justify">
             This seamless workflow frees up valuable time, empowering educators to devote more energy to fostering engaging learning experiences and promoting academic excellence.
           </p>
-          <p class="leading-normal text-2xl mb-8 slide-in-sub">
+          <p class="leading-normal text-2xl mb-8 slide-in-sub text-justify">
             By providing a centralized classworks repository, we simplify the management of educational materials, allowing teachers and students to easily access and collaborate on assignments, resources, and projects. 
           </p>
           {% if user.is_authenticated %}
-          <a href="{% url 'journal-list' %}"
+          <a href="{% url 'where-next' %}"
           class="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out fade-in fas fa-book-open"
           > 
-          Classworks
+          Explore Classworks
           </a>
           {% else %}
           <a href="{% url 'login' %}"
