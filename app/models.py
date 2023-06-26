@@ -40,6 +40,7 @@ class MyUserManager(BaseUserManager):
 
 class MyUser(AbstractBaseUser):
     name = models.CharField(max_length=100)
+    username = models.CharField(default="", max_length=100)
     email = models.EmailField(
         verbose_name='email address',
         max_length=255,

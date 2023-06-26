@@ -28,6 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['thronejsc.pythonanywhere.com', '127.0.0.1']
 
+SITE_ID=2
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,7 +44,22 @@ INSTALLED_APPS = [
     'theme',
     'ckeditor',
     'ckeditor_uploader',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google":{
+        "SCOPE":[
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {"access_type": "online"}
+    }
+}
 
 AUTH_USER_MODEL = 'app.MyUser'
 
@@ -213,3 +230,11 @@ CKEDITOR_CONFIGS = {
         ]),
     }
 }
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend"
+)
+
+LOGIN_DIRECT_URL = "profiles/wherenext/"
+LOGOUR_DIRECT_URL = "home"
