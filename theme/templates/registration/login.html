@@ -1,4 +1,5 @@
 {% load static %}
+{% load socialaccount %}
 <!DOCTYPE html>
 <html>
   <head>
@@ -46,7 +47,7 @@
             </li>
             <li class="flex items-center">
               <button class="bg-white text-gray-800 active:bg-gray-100 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3" type="button" style="transition: all 0.15s ease 0s;">
-                <a href="{% url 'signup' %}"><i class="fas fa-arrow"></i> Sign Up</a>
+                <a href="{% provider_login_url 'google' %}"><i class="fas fa-arrow"></i> Sign Up</a>
               </button>
             </li>
           </ul>
@@ -86,17 +87,10 @@
                         class="w-5 mr-1"
                         src="{% static 'images/github.svg' %}"
                       />Github</button
-                    ><button
-                      class="bg-white active:bg-gray-100 text-gray-800 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs"
-                      type="button"
-                      style="transition: all 0.15s ease 0s;"
-                    >
-                      <img
-                        alt="..."
-                        class="w-5 mr-1"
-                        src="{% static 'images/google.svg' %}"
-                      />Google
-                    </button>
+                    ><a href="{% provider_login_url 'google' %}?next={% url 'home' %}" class="bg-white active:bg-gray-100 text-gray-800 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs" style="transition: all 0.15s ease 0s;">
+                      <img alt="Google" class="w-5 mr-1" src="{% static 'images/google.svg' %}">
+                      Google
+                    </a>
                   </div>
                   <hr class="mt-6 border-b-1 border-gray-400" />
                 </div>

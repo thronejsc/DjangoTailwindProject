@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView
+from django.views import View
 
 from app.forms import MyUserCreationForm, ArticleForm, ReviewForm, ArticleFormFinal
 from django.contrib.auth.decorators import user_passes_test, login_required
@@ -20,6 +21,7 @@ from django.core.files.base import ContentFile
 import requests
 from django.conf import settings
 import os
+from django.contrib.auth import logout, login
 # ----DECORATOR
 
 
@@ -42,6 +44,16 @@ class SignUpView(CreateView):
     success_url = reverse_lazy('login')
     template_name = 'signup.html'
 
+    def form_valid(self, form):
+        # Check if the user signed up using a Google account
+        if self.request.POST.get('provider') == 'google':
+            # Set the user type as 'STUDENT'
+            form.instance.user_type = 'STUDENT'
+            # Save the user
+            return super().form_valid(form)
+        else:
+            return super().form_valid(form)
+
 
 @login_required
 def where_next(request):
@@ -56,8 +68,15 @@ def where_next(request):
     elif request.user.user_type == "PUBLISHER":
         return HttpResponseRedirect(reverse('publisher-profile'))
     else:
-        # Redirect for users without specific roles
-        raise Http404("Unauthorized")
+        # Check if user signed in with a Google account
+        if request.user.socialaccount_set.filter(provider='google').exists():
+            # Set the user type as 'STUDENT' for Google sign-in
+            request.user.user_type = "STUDENT"
+            request.user.save()
+            return HttpResponseRedirect(reverse('student-profile'))  # Redirect to the student profile
+        else:
+            # Redirect for users without specific roles
+            raise Http404("Unauthorized")
 
 
 
@@ -410,3 +429,18 @@ def document_list(request):
         'documents': documents
     }
     return render(request, 'document-list.html', context)
+
+def logout_view(request):
+    logout(request)
+    return redirect('home')
+
+"""class GoogleLoginView(View):
+    def get(self, request):
+        # Handle the Google login process here
+        # Authenticate the user using the access token or any other necessary steps
+
+        # Assuming the user is authenticated successfully, you can log them in
+        user = request.user  # Replace this with your user object
+        login(request, user)
+
+        return HttpResponseRedirect('home')  # Replace 'home' with your desired redirect URL"""
