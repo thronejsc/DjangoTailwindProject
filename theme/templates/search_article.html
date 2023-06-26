@@ -1,10 +1,24 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Article Search</title>
+    <meta name="description" content="Search Article" />
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css"/>
+    <!--Replace with your tailwind.css once created-->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet" />
     <style>
         .container {
-            max-width: 600px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .nav-container {
+            max-width: 1500px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -26,15 +40,15 @@
         .btn {
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #4CAF50;
+            background-color: #265BFF;
             color: white;
             border: none;
             cursor: pointer;
         }
-
+        
         .btn:hover {
-            background-color: #45a049;
-        }
+            background-color: #1C47D7;
+        }        
 
         .article-list {
             list-style: none;
@@ -66,36 +80,105 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Article Search</h1>
-        <form method="GET" action="{% url 'search_articles' %}">
-            <div class="form-group">
-                <input class="form-control" type="text" name="query" placeholder="Search Articles">
+    <nav id="header" class="fixed w-full z-30 top-0 text-white bg-blue-500">
+        <div class="w-full nav-container mx-auto flex flex-wrap items-center justify-between mt-4 py-2">
+            <div class="flex items-center">
+                <a class="text-white no-underline hover:no-underline font-bold text-2xl lg:text-4xl flex items-center">
+                    <!--Icon from: http://www.potlabicons.com/ -->
+                    <svg class="h-10 w-10 lg:h-12 lg:w-12 fill-current inline mr-2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <style>@keyframes rotate{0%{transform:rotateZ(0)}to{transform:rotateZ(360deg)}}</style>
+                        <g style="animation:rotate 3s cubic-bezier(.7,-.03,.26,1.05) both infinite;transform-origin:center center" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                            <path stroke="#0A0A30" d="M5.262 15.329l.486.842a1.49 1.49 0 002.035.55 1.486 1.486 0 012.036.529c.128.216.197.463.2.714a1.493 1.493 0 001.493 1.536h.979a1.486 1.486 0 001.485-1.493 1.493 1.493 0 011.493-1.471c.252.002.498.071.714.2a1.493 1.493 0 002.036-.55l.521-.857a1.493 1.493 0 00-.542-2.036 1.493 1.493 0 010-2.586c.71-.41.952-1.318.543-2.028l-.493-.85a1.493 1.493 0 00-2.036-.579 1.479 1.479 0 01-2.029-.543 1.428 1.428 0 01-.2-.714c0-.825-.668-1.493-1.492-1.493h-.98c-.82 0-1.488.664-1.492 1.486a1.485 1.485 0 01-1.493 1.493 1.521 1.521 0 01-.714-.2 1.493 1.493 0 00-2.036.542l-.514.858a1.486 1.486 0 00.543 2.035 1.486 1.486 0 01.543 2.036c-.13.226-.317.413-.543.543a1.493 1.493 0 00-.543 2.028v.008z" clip-rule="evenodd"/>
+                            <path stroke="#265BFF" d="M12.044 10.147a1.853 1.853 0 100 3.706 1.853 1.853 0 000-3.706z"/>
+                        </g>
+                    </svg>      
+                    <span class="inline-block">Computer Engineering Classwork Repository</span>
+                </a>
             </div>
-            <div class="form-group">
-                <label for="search_option">Search Option:</label>
-                <select id="search_option" name="search_option" class="form-control">
-                    <option value="text">Search by Text</option>
-                    <option value="title">Search by Title</option>
-                </select>
+            <div class="block lg:hidden pr-4">
+                <button id="nav-toggle" class="flex items-center p-1 text-pink-800 hover:text-gray-900 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+                    <svg class="fill-current h-6 w-6" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <title>Menu</title>
+                        <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
+                    </svg>
+                </button>
             </div>
-            <button class="btn btn-primary" type="submit">Search</button>
-        </form>
-
-        {% if articles %}
-            <h2>Search Results for "{{ query }}"</h2>
-            <ul class="article-list">
-                {% for article in articles %}
-                    <li>
-                        <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
-                        <p>{{ article.abstract }}</p>
-                        <p>Author: {{ article.student.name }}</p>
+            <div class="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden mt-2 lg:mt-0 text-black p-4 lg:p-0 z-20" id="nav-content">
+                <ul class="list-reset lg:flex justify-end flex-1 items-center">
+                    {% if user.is_authenticated %}
+                    <li class="mr-3">
+                        <a class="inline-block text-black no-underline hover:text-gray-800 hover:text-underline py-2 px-4" href="{% url 'where-next' %}">Dashboard</a>
                     </li>
-                {% endfor %}
-            </ul>
-        {% else %}
+                    <li class="mr-3">
+                        <a class="inline-block text-black no-underline hover:text-gray-800 hover:text-underline py-2 px-4" href="{% url 'logout' %}">Log Out</a>
+                    </li>
+                    {% else %}
+                    <li class="mr-3">
+                        <a class="inline-block text-black no-underline hover:text-gray-800 hover:text-underline py-2 px-4" href="{% url 'login' %}">Log In</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        <hr class="border-b border-gray-100 opacity-25 my-0 py-0" />
+    </nav>
+    
+    
+    <div class = "pt-60">
+        <div class="container">
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <h1 style="font-size: 48px; font-weight: bold; margin-top: 20px; margin-right: 10px;">Article Search</h1>
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" style="width: 48px; height: 48px; vertical-align: middle; transform: rotateY(180deg);">
+                    <style>@keyframes flipping{0%{transform:rotate3d(1,1,0,0deg)}to{transform:rotate3d(1,1,0,180deg)}}</style>
+                    <g style="animation:flipping 1.5s cubic-bezier(.96,-.2,0,1.29) both infinite alternate-reverse">
+                        <path fill="#0A0A30" fill-rule="evenodd" d="M5.71 11.025a5.25 5.25 0 1010.5 0 5.25 5.25 0 00-10.5 0zm5.25-7a7 7 0 100 14 7 7 0 000-14z" clip-rule="evenodd"/>
+                        <rect width="1.839" height="3.677" x="16.139" y="17.375" fill="#265BFF" rx=".2" transform="rotate(-45 16.14 17.375)"/>
+                    </g>
+                </svg>
+            </div>
+            
+
+            <form method="GET" action="{% url 'search_articles' %}">
+                <div class="form-group">
+                    <input class="form-control" type="text" name="query" placeholder="Search Articles" style="border: 1px solid #ccc;">
+                </div>
+                <div class="form-group">
+                    <label for="search_option">Search Option:</label>
+                    <select id="search_option" name="search_option" class="form-control">
+                        <option value="text">Search by Text</option>
+                        <option value="title">Search by Title</option>
+                    </select>
+                </div>
+                <div class="form-group text-center">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </div>
+            </form>
+        
+            {% if articles %}
+                {% if request.GET.query %}
+                <h2 style="text-align: center;">Search Results for "{{ request.GET.query }}"</h2>
+                    <ul class="article-list">
+                    {% for article in articles %}
+                        <li>
+                            <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+                            <p>{{ article.abstract }}</p>
+                            <p>Author: {{ article.student.name }}</p>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                <h2>Search Results</h2>
+                <p class="no-results">Please enter a search query.</p>
+                {% endif %}
+            {% else %}
+            {% if request.GET.query %}
+            <h2 style="text-align: center;">Search Results for "{{ request.GET.query }}"</h2>
             <p class="no-results">No articles found.</p>
-        {% endif %}
+            {% endif %}
+            {% endif %}
+        </div>
+        
+        
     </div>
 </body>
 </html>
