@@ -135,7 +135,7 @@
                         <strong>Created - </strong>{{ article.published_at|timesince }} ago.
                     </div>
                     <div class="text-teal-600 py-1 text-lg leading-relaxed block md:text-xs lg:text-sm">
-                        <strong>Author - </strong>{{ article.author.name }} ago.
+                        <strong>Author - </strong>{{ article.student.name }} ago.
                     </div>
                 </div>
             </article>
@@ -178,10 +178,10 @@
                         <strong>Created - </strong>{{ article.published_at|timesince }} ago.
                     </div>
                     <div class="text-teal-600 py-1 text-lg leading-relaxed block md:text-xs lg:text-sm">
-                        <strong>Author - </strong>{{ article.author.name }} ago.
+                        <strong>Author - </strong>{{ article.student.name }}
                     </div>
 {#                    <div class="relative mt-2 lg:absolute bottom-0 mb-4 md:hidden lg:block">#}
-{#                        <a class="inline bg-gray-300 py-1 px-2 rounded-full text-xs  text-gray-700" href="#">Author - {{ x.author.name}}</a>#}
+{#                        <a class="inline bg-gray-300 py-1 px-2 rounded-full text-xs  text-gray-700" href="#">Author - {{ x.student.name}}</a>#}
 {#                    </div>#}
                   </div>
 {#                <a href="{{ journal.get_absolute_url }}">#}
