@@ -8,34 +8,31 @@ from ckeditor.fields import RichTextField
 from django.core.files.base import ContentFile
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, password=None):
+    def create_user(self, email, password=None, **extra_fields):
         """
-        Creates and saves a User with the given email
-        and password.
+        Creates and saves a User with the given email and password.
         """
         if not email:
             raise ValueError('Users must have an email address')
 
+        extra_fields.setdefault('user_type', 'student')  # Set default user_type to 'student'
+
         user = self.model(
             email=self.normalize_email(email),
+            **extra_fields
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password):
+    def create_superuser(self, email, password, **extra_fields):
         """
         Creates and saves a superuser with the given email and password.
         """
-        user = self.create_user(
-            email=email,
-            password=password,
-        )
-        user.is_admin = True
-        user.save(using=self._db)
-        return user
+        extra_fields.setdefault('is_admin', True)
 
+        return self.create_user(email, password, **extra_fields)
 
 
 class MyUser(AbstractBaseUser):
@@ -47,8 +44,8 @@ class MyUser(AbstractBaseUser):
         unique=True,
     )
     USER_TYPE_CHOICES = (
-    ('STUDENT', 'student'),
-    ('PUBLISHER', 'publisher'),
+        ('STUDENT', 'student'),
+        ('PUBLISHER', 'publisher'),
     )
     user_type = models.CharField(choices=USER_TYPE_CHOICES, max_length=64, default='student')
     bio = models.TextField(null=True)
@@ -64,15 +61,15 @@ class MyUser(AbstractBaseUser):
         return self.email
 
     def is_student(self):
-        return self.user_type=="STUDENT"
+        return self.user_type == "STUDENT"
 
     def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
+        """Does the user have a specific permission?"""
         # Simplest possible answer: Yes, always
         return True
 
     def has_module_perms(self, app_label):
-        "Does the user have permissions to view the app `app_label`?"
+        """Does the user have permissions to view the app `app_label`?"""
         # Simplest possible answer: Yes, always
         return True
 

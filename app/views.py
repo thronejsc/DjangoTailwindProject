@@ -22,6 +22,7 @@ import requests
 from django.conf import settings
 import os
 from django.contrib.auth import logout, login
+from social_django.models import UserSocialAuth
 # ----DECORATOR
 
 
@@ -55,11 +56,17 @@ class SignUpView(CreateView):
             return super().form_valid(form)
 
 
+from django.http import HttpResponseRedirect, Http404
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from social_django.models import UserSocialAuth
+
+
 @login_required
 def where_next(request):
     """Simple redirector to figure out where the user goes next."""
     if request.user.is_anonymous:
-        return HttpResponse(reverse('login'))
+        return HttpResponseRedirect(reverse('login'))
     elif request.user.is_admin:
         # Allow admin users access to anything
         return HttpResponseRedirect(reverse('admin:index'))
@@ -69,14 +76,17 @@ def where_next(request):
         return HttpResponseRedirect(reverse('publisher-profile'))
     else:
         # Check if user signed in with a Google account
-        if request.user.socialaccount_set.filter(provider='google').exists():
-            # Set the user type as 'STUDENT' for Google sign-in
-            request.user.user_type = "STUDENT"
-            request.user.save()
-            return HttpResponseRedirect(reverse('student-profile'))  # Redirect to the student profile
-        else:
+        try:
+            social_account = UserSocialAuth.objects.get(user=request.user, provider='google-oauth2')
+            if social_account:
+                # Set the user type as 'STUDENT' for Google sign-in
+                request.user.user_type = "STUDENT"
+                request.user.save()
+                return HttpResponseRedirect(reverse('student-profile'))  # Redirect to the student profile
+        except UserSocialAuth.DoesNotExist:
             # Redirect for users without specific roles
             raise Http404("Unauthorized")
+
 
 
 
