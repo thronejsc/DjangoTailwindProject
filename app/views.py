@@ -22,8 +22,14 @@ import requests
 from django.conf import settings
 import os
 from django.contrib.auth import logout, login
+from social_django.models import UserSocialAuth
+from allauth.socialaccount.models import SocialAccount
 # ----DECORATOR
 
+from social_django.utils import psa
+
+def signup_google(request):
+    return redirect('social:begin', backend='google-oauth2')
 
 def is_student(user):
     if user.user_type == "STUDENT":
@@ -45,21 +51,41 @@ class SignUpView(CreateView):
     template_name = 'signup.html'
 
     def form_valid(self, form):
+        # Call the parent form_valid method to save the user
+        response = super().form_valid(form)
+
         # Check if the user signed up using a Google account
         if self.request.POST.get('provider') == 'google':
-            # Set the user type as 'STUDENT'
-            form.instance.user_type = 'STUDENT'
-            # Save the user
-            return super().form_valid(form)
-        else:
-            return super().form_valid(form)
+            # Get the UserSocialAuth associated with the user
+            social_auth = UserSocialAuth.objects.get(user=self.object)
 
+            if social_auth.provider == 'google-oauth2':
+                # Set the user type as 'student'
+                self.object.user_type = 'student'
 
+                # Obtain the name or username from the Google account
+                extra_data = social_auth.extra_data
+                name = extra_data.get('name')
+                username = extra_data.get('username')
+
+                # Set the name or username in the MyUser object
+                if name:
+                    self.object.name = name
+                elif username:
+                    self.object.username = username
+
+                self.object.save()
+
+                # Log in the user
+                login(self.request, self.object)
+
+        return response
+        
 @login_required
 def where_next(request):
     """Simple redirector to figure out where the user goes next."""
     if request.user.is_anonymous:
-        return HttpResponse(reverse('login'))
+        return HttpResponseRedirect(reverse('login'))
     elif request.user.is_admin:
         # Allow admin users access to anything
         return HttpResponseRedirect(reverse('admin:index'))
@@ -69,14 +95,17 @@ def where_next(request):
         return HttpResponseRedirect(reverse('publisher-profile'))
     else:
         # Check if user signed in with a Google account
-        if request.user.socialaccount_set.filter(provider='google').exists():
-            # Set the user type as 'STUDENT' for Google sign-in
-            request.user.user_type = "STUDENT"
-            request.user.save()
-            return HttpResponseRedirect(reverse('student-profile'))  # Redirect to the student profile
-        else:
+        try:
+            social_account = UserSocialAuth.objects.get(user=request.user, provider='google-oauth2')
+            if social_account:
+                # Set the user type as 'STUDENT' for Google sign-in
+                request.user.user_type = "STUDENT"
+                request.user.save()
+                return HttpResponseRedirect(reverse('student-profile'))  # Redirect to the student profile
+        except UserSocialAuth.DoesNotExist:
             # Redirect for users without specific roles
             raise Http404("Unauthorized")
+
 
 
 

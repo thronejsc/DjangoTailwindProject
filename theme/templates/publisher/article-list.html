@@ -70,8 +70,12 @@
       <nav>
         <ul class="list-reset md:flex md:items-center">
           <li class="md:ml-4">
-            <a class="block no-underline hover:underline py-2 text-white hover:text-black md:border-none md:p-0" href="#">
+            <a class="block no-underline hover:underline py-2 text-grey-700 hover:text-black md:border-none md:p-0" href="#">
+              {% if user.username %}
+              {{ user.username }}
+            {% else %}
               {{ user.name }}
+            {% endif %}
             </a>
           </li>
           <li class="md:ml-4">
@@ -134,11 +138,14 @@
                         <strong>Journal - </strong>{{ article.journal.code }}
                     </div>
                     <div class="text-teal-600 py-1 text-lg leading-relaxed block md:text-xs lg:text-sm">
-                        <strong>Created - </strong>{{ article.published_at|timesince }} ago.
+                        <strong>Created - </strong>{{ article.published_at }}
                     </div>
                     <div class="text-teal-600 py-1 text-lg leading-relaxed block md:text-xs lg:text-sm">
-                        <strong>Author - </strong>{{ article.author.name }} ago.
-                    </div>
+                        <strong>Author - </strong>{% if article.student.username %}
+                        {{ article.student.username }}
+                      {% else %}
+                        {{ article.student.name }}
+                      {% endif %}
                 </div>
             </article>
             <!-- END Article -->
@@ -177,13 +184,17 @@
                         <strong>Journal - </strong>{{ article.journal.code }}
                     </div>
                     <div class="text-teal-600 py-1 text-lg leading-relaxed block md:text-xs lg:text-sm">
-                        <strong>Created - </strong>{{ article.published_at|timesince }} ago.
+                        <strong>Created - </strong>{{ article.published_at}}
                     </div>
                     <div class="text-teal-600 py-1 text-lg leading-relaxed block md:text-xs lg:text-sm">
-                        <strong>Author - </strong>{{ article.author.name }} ago.
+                        <strong>Author - </strong>{% if article.student.username %}
+                        {{ article.student.username }}
+                      {% else %}
+                        {{ article.student.name }}
+                      {% endif %}
                     </div>
 {#                    <div class="relative mt-2 lg:absolute bottom-0 mb-4 md:hidden lg:block">#}
-{#                        <a class="inline bg-gray-300 py-1 px-2 rounded-full text-xs  text-gray-700" href="#">Author - {{ x.author.name}}</a>#}
+{#                        <a class="inline bg-gray-300 py-1 px-2 rounded-full text-xs  text-gray-700" href="#">Author - {{ x.student.name}}</a>#}
 {#                    </div>#}
                   </div>
 {#                <a href="{{ journal.get_absolute_url }}">#}
