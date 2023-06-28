@@ -4,8 +4,29 @@
 <html>
 <head>
     <title>Upload Document</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Article Search</title>
+    <meta name="description" content="Search Article" />
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css"/>
+    <!--Replace with your tailwind.css once created-->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet" />
     <style>
         /* CSS styles go here */
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .nav-container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
         body {
             background-color: #f1f5f9;
             font-family: Arial, sans-serif;
@@ -25,10 +46,21 @@
             margin-bottom: 10px;
             padding-bottom: 10px;
             border-bottom: 1px solid #d2d6dc;
+            text-align: center;
         }
+
+        input {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 8px;
+          }
+          
 
         .form-container {
             margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 8px;
         }
 
         .form-container label {
@@ -61,17 +93,76 @@
         .document-list li {
             margin-bottom: 5px;
         }
+
+        button {
+            margin-right: 10px;
+          }
+          
+          input[type="submit"] {
+            margin-right: 10px;
+          }
+       
     </style>
 </head>
 <body>
+    <nav id="header" class="fixed w-full z-30 top-0 text-white bg-blue-500">
+        <div class="w-full nav-container mx-auto flex flex-wrap items-center justify-between mt-4 py-2">
+            <div class="flex items-center">
+                <a class="text-white no-underline hover:no-underline font-bold text-2xl lg:text-4xl flex items-center">
+                    <!--Icon from: http://www.potlabicons.com/ -->
+                    <svg class="h-8 w-8 lg:h-10 lg:w-10 fill-current inline mr-2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <style>@keyframes rotate{0%{transform:rotateZ(0)}to{transform:rotateZ(360deg)}}</style>
+                        <g style="animation:rotate 3s cubic-bezier(.7,-.03,.26,1.05) both infinite;transform-origin:center center" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                          <path stroke="#0A0A30" d="M5.262 15.329l.486.842a1.49 1.49 0 002.035.55 1.486 1.486 0 012.036.529c.128.216.197.463.2.714a1.493 1.493 0 001.493 1.536h.979a1.486 1.486 0 001.485-1.493 1.493 1.493 0 011.493-1.471c.252.002.498.071.714.2a1.493 1.493 0 002.036-.55l.521-.857a1.493 1.493 0 00-.542-2.036 1.493 1.493 0 010-2.586c.71-.41.952-1.318.543-2.028l-.493-.85a1.493 1.493 0 00-2.036-.579 1.479 1.479 0 01-2.029-.543 1.428 1.428 0 01-.2-.714c0-.825-.668-1.493-1.492-1.493h-.98c-.82 0-1.488.664-1.492 1.486a1.485 1.485 0 01-1.493 1.493 1.521 1.521 0 01-.714-.2 1.493 1.493 0 00-2.036.542l-.514.858a1.486 1.486 0 00.543 2.035 1.486 1.486 0 01.543 2.036c-.13.226-.317.413-.543.543a1.493 1.493 0 00-.543 2.028v.008z" clip-rule="evenodd"/>
+                          <path stroke="#265BFF" d="M12.044 10.147a1.853 1.853 0 100 3.706 1.853 1.853 0 000-3.706z"/>
+                        </g>
+                      </svg>                           
+                    <span class="inline-block">Computer Engineering Classwork Repository</span>
+                </a>
+            </div>
+            <div class="block lg:hidden pr-4">
+                <button id="nav-toggle" class="flex items-center p-1 text-pink-800 hover:text-gray-900 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+                    <svg class="fill-current h-6 w-6" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <title>Menu</title>
+                        <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden mt-2 lg:mt-0 text-black p-4 lg:p-0 z-20" id="nav-content">
+                <ul class="list-reset lg:flex justify-end flex-1 items-center">
+                    {% if user.is_authenticated %}
+                    <li class="mr-3">
+                        <a class="inline-block text-black no-underline hover:text-gray-800 hover:text-underline py-2 px-4" href="{% url 'where-next' %}">Dashboard</a>
+                    </li>
+                    <li class="mr-3">
+                        <a class="inline-block text-black no-underline hover:text-gray-800 hover:text-underline py-2 px-4" href="{% url 'logout' %}">Log Out</a>
+                    </li>
+                    {% else %}
+                    <li class="mr-3">
+                        <a class="inline-block text-black no-underline hover:text-gray-800 hover:text-underline py-2 px-4" href="{% url 'login' %}">Log In</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        <hr class="border-b border-gray-100 opacity-25 my-0 py-0" />
+    </nav>
+    <div class = "pt-48">
     <div class="container">
-        <h1>Upload Document</h1>
-
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <h1 style="font-size: 48px; font-weight: bold; margin-top: 20px; margin-right: 10px;">Upload Document</h1>
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="72" height="72" fill="none">
+                <style>@keyframes slide-right{0%{transform:translateY(0)}to{transform:translateY(-1px)}}</style>
+                <path fill="#0A0A30" d="M7.77 9.87l.724.2-.723-.2zm8.46 0l.723-.197-.724.198zm-7.198 4.27a.75.75 0 000-1.5v1.5zm5.982-1.5a.75.75 0 100 1.5v-1.5zm-9.363.063c0-1.085.88-1.964 1.964-1.964v-1.5a3.464 3.464 0 00-3.464 3.464h1.5zm1.964-1.964a.911.911 0 00.88-.67l-1.447-.396a.589.589 0 01.567-.434v1.5zm.88-.67A3.637 3.637 0 0112 7.398v-1.5a5.137 5.137 0 00-4.952 3.775l1.446.396zM12 7.398a3.636 3.636 0 013.506 2.671l1.447-.396A5.137 5.137 0 0012 5.898v1.5zm3.506 2.671c.11.402.475.67.879.67v-1.5c.259 0 .496.171.567.434l-1.446.396zm.879.67c1.085 0 1.964.879 1.964 1.964h1.5a3.464 3.464 0 00-3.464-3.464v1.5zM5.684 14.14h3.348v-1.5H5.684v1.5zm9.33 0h3.302v-1.5h-3.301v1.5zm3.335-1.438c0-.014.004-.034.013-.053a.083.083 0 01.018-.025c.001-.001-.004.003-.017.008a.146.146 0 01-.047.008v1.5c.692 0 1.533-.493 1.533-1.438h-1.5zm-14.198 0c0 .945.842 1.438 1.533 1.438v-1.5a.145.145 0 01-.047-.008c-.013-.005-.018-.009-.017-.008a.114.114 0 01.031.078h-1.5z"/><path fill="#265BFF" d="M12.566 14.927a.566.566 0 11-1.132 0h1.132zm-1.132-4.53a.566.566 0 011.132 0h-1.132zm-.921 1.91a.566.566 0 11-.801-.8l.8.8zM12 10.02l-.4-.4a.566.566 0 01.8 0l-.4.4zm2.288 1.487a.566.566 0 11-.8.801l.8-.8zm-2.854 3.421v-4.53h1.132v4.53h-1.132zm-1.722-3.42l1.888-1.89.8.8-1.887 1.888-.801-.8zm2.688-1.89l1.888 1.887-.8.801L11.6 10.42l.8-.801z" style="animation:slide-right .5s cubic-bezier(1,-.43,.68,.57) infinite alternate both"/>
+            </svg>
+        </div>
         <div class="form-container">
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="submit">Upload</button>
+                <div class = "pt-8">
+                    <button type="submit"class="margin-right">Upload</button>
+                </div>
             </form>
         </div>
 
@@ -86,5 +177,6 @@
             </ul>
         </div>
     </div>
+</div>
 </body>
 </html>

@@ -67,6 +67,9 @@
   {% if user.is_authenticated %}
   <nav>
     <ul class="list-reset md:flex md:items-center">
+      <li class="mr-3">
+        <a class="inline-block py-2 px-4 text-black font-bold no-underline" href="{% url 'home' %} ">Home</a>
+      </li>
       <li class="md:ml-4">
         <a class="block no-underline hover:underline py-2 text-grey-700 hover:text-black md:border-none md:p-0" href="#">
         {{ user.name }}

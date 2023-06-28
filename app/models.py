@@ -196,7 +196,6 @@ class Document(models.Model):
     def get_absolute_url(self):
         return f"/profiles/document/{self.id}/"
 
-
     def get_description(self):
         return f"Subject: {self.subject}\n, Year Level: {self.year_level}\n, Brief Info: {self.brief_info}\n, (Uploaded By:{self.uploader})"
     

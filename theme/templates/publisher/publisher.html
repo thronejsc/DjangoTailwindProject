@@ -144,9 +144,17 @@
               <li class="items-center">
                 <a
                   class="text-gray-800 hover:text-gray-600 text-xs uppercase py-3 font-bold block"
+                  href="{% url 'article-list' %}"
+                  ><i class="fas fa-user-circle text-gray-500 mr-2 text-sm"></i>
+                  Approve Articles</a
+                >
+              </li>
+              <li class="items-center">
+                <a
+                  class="text-gray-800 hover:text-gray-600 text-xs uppercase py-3 font-bold block"
                   href="{% url 'publisher-article-list' %}"
                   ><i class="fas fa-user-circle text-gray-500 mr-2 text-sm"></i>
-                  Articles list</a
+                  Publish Articles</a
                 >
               </li>
               <li class="items-center">
@@ -477,7 +485,7 @@
                 </div>
                 <div class="p-4 flex-auto">
                   <!-- Chart -->
-                  <div id="container" style="width: 75%;">
+                  <div id="container" style="width:100%;">
                     <canvas id="pie-chart"></canvas>
                   </div>
                 </div>

@@ -77,6 +77,45 @@
             margin: 20px 0;
             color: #666;
         }
+
+        .search-heading {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 10px;
+          }
+          
+        .search-results {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        }
+        
+        .search-result {
+        margin-bottom: 20px;
+        }
+        
+        .title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #1a0dab;
+        text-decoration: none;
+        }
+        
+        .abstract {
+        font-size: 14px;
+        color: #545454;
+        }
+        
+        .author {
+        font-size: 14px;
+        color: #70757a;
+        }
+        
+        .no-results {
+        text-align: center;
+        font-size: 16px;
+        color: #888888;
+        }
     </style>
 </head>
 <body>
@@ -156,25 +195,25 @@
         
             {% if articles %}
                 {% if request.GET.query %}
-                <h2 style="text-align: center;">Search Results for "{{ request.GET.query }}"</h2>
-                    <ul class="article-list">
+                    <h2 class="search-heading">Search Results for "{{ request.GET.query }}"</h2>
+                    <ul class="search-results">
                     {% for article in articles %}
-                        <li>
-                            <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
-                            <p>{{ article.abstract }}</p>
-                            <p>Author: {{ article.student.name }}</p>
+                        <li class="search-result">
+                        <a href="{{ article.get_absolute_url }}" class="title">{{ article.title }}</a>
+                        <p class="abstract">{{ article.abstract }}</p>
+                        <p class="author">Author: {{ article.student.name }}</p>
                         </li>
                     {% endfor %}
                     </ul>
                 {% else %}
-                <h2>Search Results</h2>
-                <p class="no-results">Please enter a search query.</p>
+                    <h2 class="search-heading">Search Results</h2>
+                    <p class="no-results">Please enter a search query.</p>
                 {% endif %}
-            {% else %}
-            {% if request.GET.query %}
-            <h2 style="text-align: center;">Search Results for "{{ request.GET.query }}"</h2>
-            <p class="no-results">No articles found.</p>
-            {% endif %}
+                {% else %}
+                {% if request.GET.query %}
+                    <h2 class="search-heading">Search Results for "{{ request.GET.query }}"</h2>
+                    <p class="no-results">No articles found.</p>
+                {% endif %}
             {% endif %}
         </div>
         

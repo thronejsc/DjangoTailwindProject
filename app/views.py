@@ -287,21 +287,28 @@ def upload_document(request):
 
 
 @login_required
-def search_document(request):
-    form = SearchForm()
+def search_documents(request):
+    form = SearchForm(request.GET)
     documents = []
     not_found = False
+    context = {}  # Initialize the context dictionary
 
-    if request.method == 'POST':
-        form = SearchForm(request.POST)
-        if form.is_valid():
-            subject = form.cleaned_data['subject']
-            year_level = form.cleaned_data['year_level']
-            documents = Document.objects.filter(subject__icontains=subject, year_level=year_level)
-            if not documents:
-                not_found = True
+    if form.is_valid():
+        search_query = form.cleaned_data['search_query']
+        documents = Document.objects.filter(
+            Q(title__icontains=search_query) |
+            Q(subject__icontains=search_query) |
+            Q(brief_info__icontains=search_query) |
+            Q(year_level__icontains=search_query)
+        )
+        if not documents:
+            not_found = True
 
-    return render(request, 'student/search-form.html', {'form': form, 'documents': documents, 'not_found': not_found})
+    context['form'] = form
+    context['documents'] = documents
+    context['not_found'] = not_found
+
+    return render(request, 'student/search-form.html', context)
 
 
 @login_required
@@ -394,7 +401,7 @@ def article_list(request):
         'accepted_articles': accepted_articles,
         'rejected_articles': rejected_articles,
     }
-    return render(request, 'publisher/article-list.html(e)', context)
+    return render(request, 'publisher/article-list(e).html', context)
 
 
 @login_required
