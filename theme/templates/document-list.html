@@ -107,25 +107,34 @@
       </div>
       <div class="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden mt-2 lg:mt-0 bg-white lg:bg-transparent text-black p-4 lg:p-0 z-20" id="nav-content">
         <ul class="list-reset lg:flex justify-end flex-1 items-center">
-          <li class="mr-3">
-            <a class="inline-block py-2 px-4 text-black font-bold no-underline" href="{% url 'home' %} ">Home</a>
-          </li>
+          <li class="flex items-center">
+            <button class="bg-white text-gray-800 active:bg-gray-100 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3" type="button" style="transition: all 0.15s ease 0s;">
+              <a  href="{% url 'home' %}"><i class="fas fa-arrow"></i>Home</a>
+            </button>
+          </li> 
           {% if user.is_authenticated %}
-          <li class="mr-3">
-            <a class="inline-block text-black no-underline hover:text-gray-800 hover:text-underline py-2 px-4" href="{% url 'search_document' %}">Search</a>
+          <li class="flex items-center">
+            <button class="bg-white text-gray-800 active:bg-gray-100 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3" type="button" style="transition: all 0.15s ease 0s;">
+              <a  href="{% url 'search_document' %}"><i class="fas fa-arrow"></i>Search</a>
+            </button>
           </li>
-          <li class="mr-3">
-            <a class="inline-block text-black no-underline hover:text-gray-800 hover:text-underline py-2 px-4" href={% url 'where-next' %}>Dashboard</a>
-          </li>
-          <li class="mr-3">
-            <a class="inline-block text-black no-underline hover:text-gray-800 hover:text-underline py-2 px-4" href="#">Log Out</a>
-          </li>
+          <li class="flex items-center">
+            <button class="bg-white text-gray-800 active:bg-gray-100 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3" type="button" style="transition: all 0.15s ease 0s;">
+              <a  href="{% url 'where-next' %}"><i class="fas fa-arrow"></i>Dashboard</a>
+            </button>
+          </li>           
+          <li class="flex items-center">
+            <button class="bg-white text-gray-800 active:bg-gray-100 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3" type="button" style="transition: all 0.15s ease 0s;">
+              <a  href="{% url 'logout' %}"><i class="fas fa-arrow"></i>Logout</a>
+            </button>
+          </li> 
           {% else %}
-          <li class="mr-3">
-            <a class="inline-block text-black no-underline hover:text-gray-800 hover:text-underline py-2 px-4" href="{% url 'login' %}">Log In</a>
-          </li>
+          <li class="flex items-center">
+            <button class="bg-white text-gray-800 active:bg-gray-100 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3" type="button" style="transition: all 0.15s ease 0s;">
+              <a  href="{% url 'login' %}"><i class="fas fa-arrow"></i>Login</a>
+            </button>
+          </li> 
           {% endif %}
-
         </ul>
         
 

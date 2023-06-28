@@ -17,10 +17,10 @@
     <title>Login </title>
   </head>
   <body class="text-gray-800 antialiased">
-    <nav id="header" class="fixed w-full z-30 top-0 text-white bg-gray-800">
+    <nav id="header" class="fixed w-full z-30 top-0 text-white bg-blue-500">
       <div class="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2">
         <div class="pl-4 flex items-center">
-          <a class="toggleColour text-white no-underline hover:no-underline font-bold text-2xl lg:text-4xl" href="#">
+          <a class="toggleColour text-white no-underline hover:no-underline font-bold text-2xl lg:text-4xl" href="{% url 'home' %}">
             <!--Icon from: http://www.potlabicons.com/ -->
             <svg class="h-8 fill-current inline" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
               <style>@keyframes rotate{0%{transform:rotateZ(0)}to{transform:rotateZ(360deg)}}</style>
@@ -42,8 +42,10 @@
         </div>
         <div class="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden mt-2 lg:mt-0 bg-white lg:bg-transparent text-black p-4 lg:p-0 z-20" id="nav-content">
           <ul class="list-reset lg:flex justify-end flex-1 items-center">
-            <li class="mr-3">
-              <a class="inline-block py-2 px-4 text-white font-bold no-underline" href="{% url 'home' %}">Home</a>
+            <li class="flex items-center">
+              <button class="bg-white text-gray-800 active:bg-gray-100 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3" type="button" style="transition: all 0.15s ease 0s;">
+                <a  href="{% url 'home' %}"><i class="fas fa-arrow"></i>Home</a>
+              </button>
             </li>
             <li class="flex items-center">
               <button class="bg-white text-gray-800 active:bg-gray-100 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3" type="button" style="transition: all 0.15s ease 0s;">
@@ -77,17 +79,7 @@
                     </h6>
                   </div>
                   <div class="btn-wrapper text-center">
-                    <button
-                      class="bg-white active:bg-gray-100 text-gray-800 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-2 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs"
-                      type="button"
-                      style="transition: all 0.15s ease 0s;"
-                    >
-                      <img
-                        alt="..."
-                        class="w-5 mr-1"
-                        src="{% static 'images/github.svg' %}"
-                      />Github</button
-                    ><a href="{% url 'social:begin' 'google-oauth2' %}" class="bg-white active:bg-gray-100 text-gray-800 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs" style="transition: all 0.15s ease 0s;">
+                    <a href="{% url 'social:begin' 'google-oauth2' %}" class="bg-white active:bg-gray-100 text-gray-800 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs" style="transition: all 0.15s ease 0s;">
                       <img alt="Google" class="w-5 mr-1" src="{% static 'images/google.svg' %}">
                       Google
                     </a>

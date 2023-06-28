@@ -17,10 +17,10 @@
     <title>Signup </title>
   </head>
   <body class="text-gray-800 antialiased">
-    <nav id="header" class="fixed w-full z-30 top-0 text-white bg-transparent">
+    <nav id="header" class="fixed w-full z-30 top-0 text-white bg-blue-500">
       <div class="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2">
         <div class="pl-4 flex items-center">
-          <a class="toggleColour text-white no-underline hover:no-underline font-bold text-2xl lg:text-4xl" href="#">
+          <a class="toggleColour text-white no-underline hover:no-underline font-bold text-2xl lg:text-4xl" href="{% url 'home' %}">
             <!--Icon from: http://www.potlabicons.com/ -->
             <svg class="h-8 fill-current inline" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
               <style>@keyframes rotate{0%{transform:rotateZ(0)}to{transform:rotateZ(360deg)}}</style>
@@ -74,17 +74,7 @@
                     </h6>
                   </div>
                   <div class="btn-wrapper text-center">
-                    <button
-                      class="bg-white active:bg-gray-100 text-gray-800 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-2 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs"
-                      type="button"
-                      style="transition: all 0.15s ease 0s;"
-                    >
-                      <img
-                        alt="..."
-                        class="w-5 mr-1"
-                        src="{% static 'images/github.svg' %}"
-                      />Github</button
-                    ><a href="{% url 'social:begin' 'google-oauth2' %}" class="bg-white active:bg-gray-100 text-gray-800 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs" style="transition: all 0.15s ease 0s;">
+                      <a href="{% url 'social:begin' 'google-oauth2' %}" class="bg-white active:bg-gray-100 text-gray-800 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs" style="transition: all 0.15s ease 0s;">
                       <img alt="Google" class="w-5 mr-1" src="{% static 'images/google.svg' %}">
                       Google
                     </a>
