@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}
-        Journals
+        Articles
     {% endblock %}</title>
     <!-- Font Awesome if you need it  -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
@@ -27,24 +27,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <style>
-        .gradient {
-            background: linear-gradient(90deg, #3b9e95 0%, #4dc0b5 100%);
-        }
-        .gradient2 {
-            background: linear-gradient(#a1c4fd 0%, #c2e9fb 100%);
-        }
-        .gradient3 {
-            background: linear-gradient(90deg, #a1c4fd 0%, #c2e9fb 100%);
-        }
+      .gradient {
+        background: linear-gradient(90deg, #3b9e95, #4dc0b5);
+      }
+      
+      .gradient2 {
+        background: linear-gradient(#a1c4fd, #c2e9fb);
+      }
+      
+      .gradient3 {
+        background: linear-gradient(90deg, #a1c4fd, #c2e9fb);
+      }
+      
     </style>
 </head>
 <body class="text-gray-800 antialiased bg-gray-100" style="font-family: 'Roboto', sans-serif;">
   <header class="border-b md:flex md:items-center md:justify-between p-4 pb-0 shadow-lg md:pb-4" style="background-image: linear-gradient(to bottom right, #265BFF, #0A0A30);">
-
     <!-- Logo text or image -->
     <div class="flex items-center justify-between mb-4 md:mb-0">
       <h1 class="leading-none text-2xl text-grey-darkest">
-        <a class="no-underline text-grey-darkest hover:text-black" href="{% url 'home' %}">
+        <a class="no-underline text-white hover:text-gray-900" href="{% url 'home' %}">
           Computer Engineering Classwork Repository
         </a>
       </h1>
@@ -68,17 +70,17 @@
       <nav>
         <ul class="list-reset md:flex md:items-center">
           <li class="md:ml-4">
-            <a class="block no-underline hover:underline py-2 text-grey-700 hover:text-black md:border-none md:p-0" href="#">
+            <a class="block no-underline hover:underline py-2 text-white hover:text-black md:border-none md:p-0" href="#">
               {{ user.name }}
             </a>
           </li>
           <li class="md:ml-4">
-            <a class="border-t block no-underline hover:underline py-2 text-grey-darkest hover:text-black md:border-none md:p-0" href="#">
+            <a class="border-t block no-underline hover:underline py-2 text-white hover:text-black md:border-none md:p-0" href="#">
               {{ user.email }}
             </a>
           </li>
           <li class="md:ml-4">
-            <a class="border-t block no-underline hover:underline py-2 text-grey-darkest hover:text-black md:border-none md:p-0" href="{% url 'logout' %}">
+            <a class="border-t block no-underline hover:underline py-2 text-white hover:text-black md:border-none md:p-0" href="{% url 'logout' %}">
               Log out
             </a>
           </li>

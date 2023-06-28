@@ -123,8 +123,7 @@ class ArticleSearchForm(forms.Form):
     search_option = forms.ChoiceField(label='Search Option', choices=SEARCH_CHOICES)
 
 class SearchForm(forms.Form):
-    subject = forms.CharField(max_length=100)
-    year_level = forms.IntegerField()
+    search_query = forms.CharField(max_length=100)
 
 class CommentForm(forms.ModelForm):
     class Meta:

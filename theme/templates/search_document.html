@@ -1,19 +1,21 @@
 <!-- search_document.html -->
 
-<h2>Search Documents</h2>
-<form method="post">
+<form method="get">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Search</button>
 </form>
 
-{% if not_found %}
-    <p>No documents found.</p>
-{% elif documents %}
+{% if documents %}
     <h2>Search Results</h2>
     <ul>
         {% for document in documents %}
-            <li><a href="{% url 'view_document' document.id %}">{{ document }}</a></li>
+            <li><a href="{% url 'view_document' document.id %}">{{ document.title }}</a></li>
+            <li><a href="{% url 'view_document' document.id %}">{{ document.subject }}</a></li>
+            <li><a href="{% url 'view_document' document.id %}">{{ document.year_level }}</a></li>
+            <!-- Display other document fields as needed -->
         {% endfor %}
     </ul>
+{% else %}
+    <p>No documents found.</p>
 {% endif %}
