@@ -107,6 +107,9 @@ class Keyword(models.Model):
 
     def __str__(self):
         return self.word
+    
+    class Meta:
+        ordering = ['word']
 
 
 class Subject(models.Model):

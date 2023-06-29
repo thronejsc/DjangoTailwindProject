@@ -979,7 +979,7 @@
 
   <!-- Logo text or image -->
   <div class="pl-4 flex items-center">
-    <a class="toggleColour text-white no-underline hover:no-underline font-bold text-2xl lg:text-3xl">
+    <a class="toggleColour text-white no-underline hover:no-underline font-bold text-2xl lg:text-3xl href="{}"">
       <!--Icon from: http://www.potlabicons.com/ -->
       <svg class="h-8 fill-current inline" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
         <style>@keyframes rotate{0%{transform:rotateZ(0)}to{transform:rotateZ(360deg)}}</style>
@@ -1013,6 +1013,11 @@
       <li class="md:ml-4">
         <a class="border-t block no-underline hover:underline py-2 text-grey-darkest hover:text-black md:border-none md:p-0" href="#">
           {{ user.email }}
+        </a>
+      </li>
+      <li class="md:ml-4">
+        <a class="border-t block no-underline hover:underline py-2 text-grey-darkest hover:text-black md:border-none md:p-0" href="{% url 'home' %}">
+          Home
         </a>
       </li>
       <li class="md:ml-4">
