@@ -6,7 +6,7 @@ from django.views import View
 
 from app.forms import MyUserCreationForm, ArticleForm, ReviewForm, ArticleFormFinal
 from django.contrib.auth.decorators import user_passes_test, login_required
-from django.db.models import Q
+from django.db.models import Q, Count
 
 from app.models import MyUser, STAGE_UNDER_REVIEW, Journal, Article, STAGE_PUBLISHED, EditorNote, STAGE_REJECTED, \
     STAGE_ACCEPTED
@@ -116,6 +116,7 @@ def student_base(request):
     articles_rejected = Article.objects.filter(state='Rejected').filter(student=request.user).count()
     articles_published = Article.objects.filter(state='Published').filter(student=request.user).count()
     articles = Article.objects.filter(student=request.user)
+    documents = Document.objects.filter(uploader=request.user).count()
     # print(articles_in_queue)
     labels = ["Articles In Peer Review","Articles Acepted","Articles Published","Articles Rejected"]
     data = []
@@ -130,6 +131,7 @@ def student_base(request):
         'articles_rejected': articles_rejected,
         'articles_published': articles_published,
         'articles': articles,
+        'documents': documents,
         'labels': labels,
         'data': data,
     }
@@ -170,9 +172,10 @@ def publisher_base(request):
     articles_rejected = Article.objects.filter(state='Rejected').count()
     articles_published = Article.objects.filter(state='Published').count()
     articles = Article.objects.filter(student=request.user)
+    document_count = Document.objects.count()
 
     students = MyUser.objects.filter(user_type='STUDENT').count()
-    editors = MyUser.objects.filter(user_type='EDITOR').count()
+    editors = MyUser.objects.filter(user_type='PUBLISHER').count()
 
     labels = ["Articles In Peer Review", "Articles Accepted", "Articles Published", "Articles Rejected"]
     data = [articles_in_queue, articles_accepted, articles_published, articles_rejected]
@@ -185,6 +188,7 @@ def publisher_base(request):
         'articles_in_queue': articles_in_queue,
         'articles_rejected': articles_rejected,
         'articles': articles,
+        'document_count': document_count,
         'labels': labels,
         'data': data,
     }
