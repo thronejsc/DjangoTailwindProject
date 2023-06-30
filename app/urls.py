@@ -16,7 +16,7 @@ urlpatterns = [
     path('article/<int:article_id>', views.article_view, name='article-detail'),
     path('journal/<int:journal_id>/submit-article', views.submit_article, name='submit-article'),
 
-    path('editor/article-list', views.article_list, name='article-list'),
+    path('publisher/article-list-review', views.article_list, name='article-list'),
     path('editor/article-list/pending/<int:article_id>', views.review_pending_article, name='review_article'),
     path('searchart/', views.search_articles, name='search_articles'),
 

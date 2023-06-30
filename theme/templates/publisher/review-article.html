@@ -140,6 +140,20 @@
     </div>
 </div>
 
+{#ARTICLE TEXT#}
+<div class="container mx-auto">
+
+  <div class="bg-white p-10 shadow-xl hover:shadow-2xl transition delay-200 duration-100 ease-in-out rounded-lg overflow-hidden ">
+      <p><strong></strong></p>
+      {{ article.text|safe }}
+  </div>
+  <hr>
+{#    <strong>Time</strong>#}
+{#    <time datetime="2016-1-1">{{ article.published_at }}</time>#}
+</div>
+
+
+
 <main class=" flex-1 md:p-0 lg:pt-8 lg:px-16 md:mx-24 mx-56 flex flex-col">
   <section class="rounded-lg bg-white p-4 shadow">
   <div class="md:flex">
