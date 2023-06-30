@@ -80,7 +80,7 @@
     </style>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
-<body class="text-gray-800 antialiased bg-gray-100" style="font-family: 'Roboto', sans-serif;">
+
 
   <nav id="header" class="fixed w-full z-30 top-0 text-white bg-blue-500">
     <div class="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2">
@@ -142,58 +142,108 @@
     </div>
     <hr class="border-b border-gray-100 opacity-25 my-0 py-0" />
   </nav>
-{#    {% for journal in journals %}#}
-{#        <div class="column">#}
-{#            <div class="notification is-info ">#}
-{#                <p class="has-text-light">Journal Name - {{ journal.code }}</p>#}
-{#                <p>Journal Description - </p>#}
-{#                <p>#}
-{#                    {{ journal.description }}#}
-{#                </p>#}
-                {#<p>{{ journal.id }}</p>#}
-{#                <a href="{{ journal.get_absolute_url }}">Link</a>#}
-{#                <img src="{{ journal.j_image.url }}">#}
-{#            </div>#}
-{#        </div>#}
-{#    {% endfor %}#}
-<p class="text-2xl text-gray-700 text-center my-20">Documents</p>
+  <body class="text-gray-800 antialiased bg-gray-100" style="font-family: 'Roboto', sans-serif;">
+    
+    {# {% for journal in journals %} #}
+    {# <div class="column"> #}
+    {# <div class="notification is-info "> #}
+    {# <p class="has-text-light">Journal Name - {{ journal.code }}</p> #}
+    {# <p>Journal Description - </p> #}
+    {# <p> #}
+    {# {{ journal.description }} #}
+    {# </p> #}
+    {# <p>{{ journal.id }}</p> #}
+    {# <a href="{{ journal.get_absolute_url }}">Link</a> #}
+    {# <img src="{{ journal.j_image.url }}"> #}
+    {# </div> #}
+    {# </div> #}
+    {# {% endfor %} #}
+    
+ <!--  {# Add this button to trigger sorting #}
+    <div class="text-center my-4">
+      <button id="sortButton" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sort mr-2">
+          <path d="M6 10L12 4L18 10M6 14L12 20L18 14" />
+        </svg>
+        Sort by Alphabet
+      </button>
+    </div> --> 
+    
+<!--   {# JavaScript code to handle sorting #}
+    <script>
+      const sortButton = document.getElementById('sortButton');
+      let sortAscending = true;
+    
+      sortButton.addEventListener('click', () => {
+        sortAscending = !sortAscending;
+        const sortIcon = document.querySelector('#sortButton svg');
+        sortIcon.classList.toggle('feather-sort');
+        sortIcon.classList.toggle('feather-sort-desc');
+        sortIcon.classList.toggle('feather-sort-asc');
+    
+        const subjectList = document.querySelector('.subject-list');
+        const sortedItems = Array.from(subjectList.children).sort((a, b) => {
+          const textA = a.textContent.toUpperCase();
+          const textB = b.textContent.toUpperCase();
+          if (sortAscending) {
+            return textA.localeCompare(textB);
+          } else {
+            return textB.localeCompare(textA);
+          }
+        });
+    
+        sortedItems.forEach((item) => {
+          subjectList.appendChild(item);
+        });
+      });
+    </script>> -->
 
-<a href="{% url 'upload_document' %}" class="floating-menu" title="Upload"></a>
-
-<div class="container my-12 mx-auto px-4 md:px-12">
-  <ul class="space-y-6">
-    {% for document in documents %}
-    <li>
-      <div class="max-w-sm rounded-lg overflow-hidden shadow-lg">
-        <a href="{{ document.get_absolute_url }}">
-          <!--<img alt="Journal Image" class="w-full h-56 object-cover" src="{{ journal.j_image.url }}"> -->
-        </a>
-        <div class="px-6 py-4">
-          <div class="font-bold text-lg mb-2">
-            <a class="no-underline hover:underline text-black" href="{{ document.get_absolute_url }}">
-              {{ document.title }}
-            </a>
-          </div>
-          <p class="text-gray-700 text-sm">{{ document.subject }}</p>
-          <p class="text-gray-700 text-sm">{{ document.year_level }}</p>
+    <div class="container mx-auto px-4 md:px-12 my-16">
+      {% regroup documents by subject as subject_documents %}
+      {% for subject in subject_documents %}
+        {% if forloop.first or subject.grouper != subject_documents.0.grouper %}
+          {% if not forloop.first %}
+            </div> <!-- Close previous container -->
+          {% endif %}
+          <div> <!-- Open new container -->
+            <h3 class="text-2xl text-gray-700 my-6">{{ subject.grouper }}</h3>
+        {% endif %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {% for document in documents %}
+            {% if document.subject == subject.grouper %}
+              <div class="relative max-w-sm rounded-lg overflow-hidden shadow-lg">
+                <a href="{{ document.get_absolute_url }}">
+                  <!--<img alt="Journal Image" class="w-full h-56 object-cover" src="{{ journal.j_image.url }}"> -->
+                </a>
+                <div class="px-6 py-4">
+                  <div class="font-bold text-lg mb-2">
+                    <a class="no-underline hover:underline text-black" href="{{ document.get_absolute_url }}">
+                      {{ document.title }}
+                    </a>
+                  </div>
+                  <p class="text-gray-700 text-sm">
+                    <a class="no-underline hover:underline text-black" href="{{ document.get_absolute_url }}">
+                      {{ document.subject }}
+                    </a>
+                  </p>
+                  <p class="text-gray-700 text-sm">{{ document.year_level }}</p>
+                </div>
+                <div class="px-6 py-4 flex items-center justify-between">
+                  <a class="flex items-center no-underline hover:underline text-black" href="{{ document.get_absolute_url }}">
+                    <!-- <img alt="Placeholder" class="block rounded-full" src="https://picsum.photos/32/32/?random"> -->
+                    <p class="ml-2 text-sm">{{ document.brief_info }}</p>
+                  </a>
+                  <a class="no-underline text-gray-700 hover:text-red-700" href="#">
+                    <span class="hidden">Like</span>
+                    <!-- <i class="fa fa-heart"></i> -->
+                  </a>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
         </div>
-        <div class="px-6 py-4 flex items-center justify-between">
-          <a class="flex items-center no-underline hover:underline text-black" href="{{ document.get_absolute_url }}">
-            <!-- <img alt="Placeholder" class="block rounded-full" src="https://picsum.photos/32/32/?random"> -->
-            <p class="ml-2 text-sm">{{ document.brief_info }}</p>
-          </a>
-          <a class="no-underline text-gray-700 hover:text-red-700" href="#">
-            <span class="hidden">Like</span>
-            <!-- <i class="fa fa-heart"></i> -->
-          </a>
-        </div>
-      </div>
-    </li>
-    {% endfor %}
-  </ul>
-</div>
-
-
+      {% endfor %}
+    </div>
 
 </body>
 </html>
