@@ -151,8 +151,12 @@ class Article(models.Model):
     published_at = models.DateTimeField(null=True)
     keywords = models.ManyToManyField(Keyword, related_name="keywords")
 
+    def __str__(self):
+        return self.title
+    
     def get_absolute_url(self):
         return f"/profiles/article/{self.id}"
+    
 
 
 class EditorNote(models.Model):

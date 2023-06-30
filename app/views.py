@@ -244,6 +244,9 @@ def search_articles(request):
         elif search_option == 'title':
             # Search articles by title
             articles = articles.filter(title__icontains=query)
+        elif search_option == 'keywords':
+            # Search articles by title
+            articles = articles.filter(title__icontains=query)
 
     context = {
         'form': form,
