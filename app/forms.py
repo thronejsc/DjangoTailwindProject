@@ -123,7 +123,12 @@ class ArticleSearchForm(forms.Form):
     search_option = forms.ChoiceField(label='Search Option', choices=SEARCH_CHOICES)
 
 class SearchForm(forms.Form):
-    search_query = forms.CharField(max_length=100)
+    SEARCH_CHOICES = (
+        ('title', 'Search by Title'),
+        ('subject', 'Search by Subject'),
+    )
+    query = forms.CharField(label='Search', max_length=100, required=False)
+    search_option = forms.ChoiceField(label='Search Option', choices=SEARCH_CHOICES)
 
 class CommentForm(forms.ModelForm):
     class Meta:

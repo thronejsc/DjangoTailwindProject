@@ -295,27 +295,27 @@ def upload_document(request):
 
 @login_required
 def search_documents(request):
-    form = SearchForm(request.GET)
-    documents = []
-    not_found = False
-    context = {}  # Initialize the context dictionary
+    form = SearchForm(request.GET or None)
+    documents = Document.objects.all()
 
     if form.is_valid():
-        search_query = form.cleaned_data['search_query']
-        documents = Document.objects.filter(
-            Q(title__icontains=search_query) |
-            Q(subject__icontains=search_query) |
-            Q(brief_info__icontains=search_query) |
-            Q(year_level__icontains=search_query)
-        )
-        if not documents:
-            not_found = True
+        query = form.cleaned_data['query']
+        search_option = form.cleaned_data['search_option']
 
-    context['form'] = form
-    context['documents'] = documents
-    context['not_found'] = not_found
+        if search_option == 'title':
+            # Search documents by title
+            documents = documents.filter(title__icontains=query)
+        elif search_option == 'subject':
+            # Search documents by subject
+            documents = documents.filter(subject__icontains=query)
+
+    context = {
+        'form': form,
+        'documents': documents,
+    }
 
     return render(request, 'student/search-form.html', context)
+
 
 
 @login_required
@@ -339,7 +339,7 @@ def view_document(request, document_id):
 
     return render(request, 'view_document.html', {'document': document, 'comments': comments, 'form': form, 'pdf_url': pdf_url})
 
-
+@login_required
 def comment_submit(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 

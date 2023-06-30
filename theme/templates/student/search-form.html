@@ -188,35 +188,42 @@
                 <div class="form-group">
                     <input class="form-control" type="text" name="query" placeholder="Search Documents" style="border: 1px solid #ccc;">
                 </div>
+                <div class="form-group">
+                    <label for="search_option">Search Option:</label>
+                    <select id="search_option" name="search_option" class="form-control" style="border: 1px solid #ccc;">
+                        <option value="title">Search by Title</option>
+                        <option value="subject">Search by Subject</option>
+                    </select>
+                </div>
                 <div class="form-group text-center">
                     <button class="btn btn-primary" type="submit">Search</button>
                 </div>
             </form>
-  
+            
             {% if documents %}
                 {% if request.GET.query %}
                     <h2 class="search-heading">Search Results for "{{ request.GET.query }}"</h2>
                     <ul class="search-results">
-                    {% for document in documents %}
-                        <li class="search-result">
-                        <a href="{{ document.get_absolute_url }}" class="title">{{ document.title }}</a>
-                        <a href="{{ document.get_absolute_url }}" class="subject">{{ document.subject}}</a>
-                        <p class= "year level">{{ document.year_level }}</p>                        
-                        <p class="uploader">Uploader: {{ document.uploader }}</p>
-                        <p class="brief info">{{ document.brief_info }}</p>
-                    </li>
-                    {% endfor %}
+                        {% for document in documents %}
+                            <li class="search-result">
+                                <a href="{{ document.get_absolute_url }}" class="title">{{ document.title }}</a>
+                                <p><a href="{{ document.get_absolute_url }}" class="subject">{{ document.subject}}</a></p>
+                                <p class="year-level">{{ document.year_level }}</p>
+                                <p class="uploader">Uploader: {{ document.uploader }}</p>
+                                <p class="brief-info">{{ document.brief_info }}</p>
+                            </li>
+                        {% endfor %}
                     </ul>
                 {% else %}
                     <h2 class="search-heading">Search Results</h2>
                     <p class="no-results">Please enter a search query.</p>
                 {% endif %}
-                {% else %}
+            {% else %}
                 {% if request.GET.query %}
                     <h2 class="search-heading">Search Results for "{{ request.GET.query }}"</h2>
                     <p class="no-results">No Documents found.</p>
                 {% endif %}
-            {% endif %}
+            {% endif %}            
         </div>
     </div>
 </body>        
