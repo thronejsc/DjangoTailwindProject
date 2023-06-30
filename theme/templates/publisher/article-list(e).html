@@ -161,187 +161,176 @@ label .fa {
 }
     </style>
 </head>
-<body class="bg-gray-100 text-charcoal min-h-screen font-sans leading-normal overflow-x-hidden lg:overflow-auto"
+<!--<body class="bg-gray-100 text-charcoal min-h-screen font-sans leading-normal overflow-x-hidden lg:overflow-auto"
       style="font-family: 'Roboto', sans-serif;">
       <header class="border-b md:flex md:items-center md:justify-between p-4 pb-0 shadow-lg md:pb-4" style="background-image: linear-gradient(to bottom right, #265BFF, #0A0A30);">
 
-        <!-- Logo text or image -->
-        <div class="flex items-center justify-between mb-4 md:mb-0">
-          <h1 class="leading-none text-2xl text-grey-darkest">
-            <a class="no-underline text-grey-darkest hover:text-black" href="{% url 'home' %}">
-              Computer Engineering Classwork Repository
-            </a>
-          </h1>
+         Logo text or image 
+
+        END Logo text or image 
       
-          <a class="text-black hover:text-orange md:hidden" href="#">
-            <i class="fa fa-2x fa-bars"></i>
-          </a>
-        </div>
-        <!-- END Logo text or image -->
-      
-        <!-- Search field -->
+         Search field 
         <form class="mb-4 w-full md:mb-0 md:w-1/4">
           <label class="hidden" for="search-form">Search</label>
           <input class="bg-grey-lightest border-2 focus:border-orange p-2 rounded-lg shadow-inner w-full" placeholder="Search" type="text">
           <button class="hidden">Submit</button>
-        </form>
+        </form>-->
         <!-- END Search field -->
       
         <!-- Global navigation -->
-        {% if user.is_authenticated %}
-          <nav>
-            <ul class="list-reset md:flex md:items-center">
-              <li class="md:ml-4">
-                <a class="block no-underline hover:underline py-2 text-grey-700 hover:text-black md:border-none md:p-0" href="#">
-                  {{ user.name }}
-                </a>
-              </li>
-              <li class="md:ml-4">
-                <a class="border-t block no-underline hover:underline py-2 text-grey-darkest hover:text-black md:border-none md:p-0" href="#">
-                  {{ user.email }}
-                </a>
-              </li>
-              <li class="md:ml-4">
-                <a class="border-t block no-underline hover:underline py-2 text-grey-darkest hover:text-black md:border-none md:p-0" href="{% url 'logout' %}">
-                  Log out
-                </a>
-              </li>
-            </ul>
-          </nav>
-        {% else %}
-          <nav>
-            <ul class="list-reset md:flex md:items-center">
-              <li class="md:ml-4">
-                <a class="block no-underline hover:underline py-2 text-grey-darkest hover:text-black md:border-none md:p-0" href="#">
-      
-                </a>
-              </li>
-              <li class="md:ml-4">
-                <a class="border-t block no-underline hover:underline py-2 text-grey-darkest hover:text-black md:border-none md:p-0" href="#">
-                  About
-                </a>
-              </li>
-              <li class="md:ml-4">
-                <a class="border-t block no-underline hover:underline py-2 text-grey-darkest hover:text-black md:border-none md:p-0" href="#">
-                  Contact
-                </a>
-              </li>
-            </ul>
-          </nav>
-        {% endif %}
+        <nav id="header" class="fixed w-full z-30 top-0 text-white bg-blue-500">
+          <div class="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2">
+            <div class="pl-4 flex items-center">
+              <a class="toggleColour text-white no-underline hover:no-underline font-bold text-2xl lg:text-4xl" href="{% url 'home' %}">
+                <!--Icon from: http://www.potlabicons.com/ -->
+                <svg class="h-8 fill-current inline" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
+                  <style>@keyframes rotate{0%{transform:rotateZ(0)}to{transform:rotateZ(360deg)}}</style>
+                  <g style="animation:rotate 3s cubic-bezier(.7,-.03,.26,1.05) both infinite;transform-origin:center center" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                    <path stroke="#0A0A30" d="M5.262 15.329l.486.842a1.49 1.49 0 002.035.55 1.486 1.486 0 012.036.529c.128.216.197.463.2.714a1.493 1.493 0 001.493 1.536h.979a1.486 1.486 0 001.485-1.493 1.493 1.493 0 011.493-1.471c.252.002.498.071.714.2a1.493 1.493 0 002.036-.55l.521-.857a1.493 1.493 0 00-.542-2.036 1.493 1.493 0 010-2.586c.71-.41.952-1.318.543-2.028l-.493-.85a1.493 1.493 0 00-2.036-.579 1.479 1.479 0 01-2.029-.543 1.428 1.428 0 01-.2-.714c0-.825-.668-1.493-1.492-1.493h-.98c-.82 0-1.488.664-1.492 1.486a1.485 1.485 0 01-1.493 1.493 1.521 1.521 0 01-.714-.2 1.493 1.493 0 00-2.036.542l-.514.858a1.486 1.486 0 00.543 2.035 1.486 1.486 0 01.543 2.036c-.13.226-.317.413-.543.543a1.493 1.493 0 00-.543 2.028v.008z" clip-rule="evenodd"/>
+                    <path stroke="#265BFF" d="M12.044 10.147a1.853 1.853 0 100 3.706 1.853 1.853 0 000-3.706z"/>
+                  </g>
+                </svg>      
+                Computer Engineering Classwork Repository
+              </a>
+            </div>
+            <div class="block lg:hidden pr-4">
+              <button id="nav-toggle" class="flex items-center p-1 text-pink-800 hover:text-gray-900 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+                <svg class="fill-current h-6 w-6" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                  <title>Menu</title>
+                  <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
+                </svg>
+              </button>
+            </div>
+            <div class="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden mt-2 lg:mt-0 bg-white lg:bg-transparent text-black p-4 lg:p-0 z-20" id="nav-content">
+              <ul class="list-reset lg:flex justify-end flex-1 items-center">
+                <li class="flex items-center">
+                  <button class="bg-white text-gray-800 active:bg-gray-100 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3" type="button" style="transition: all 0.15s ease 0s;">
+                    <a  href="{% url 'where-next' %}"><i class="fas fa-arrow"></i>{{user.name}}</a>
+                  </button>
+                </li>
+                <li class="flex items-center">
+                  <button class="bg-white text-gray-800 active:bg-gray-100 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3" type="button" style="transition: all 0.15s ease 0s;">
+                    <a href="{% url 'where-next' %}"><i class="fas fa-arrow"></i>{{user.email}}</a>
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <hr class="border-b border-gray-100 opacity-25 my-0 py-0" />
+        </nav>
+        
+        <script>
+          document.getElementById("nav-toggle").addEventListener("click", function() {
+            var navContent = document.getElementById("nav-content");
+            navContent.classList.toggle("hidden");
+          });
+        </script>
+        
         <!-- END Global navigation -->
       
       </header>
       
+<p class="antialiased text-center mx-16 my-16 text-blue-700 text-3xl py-10">Pending Articles</p>
 
-<p class="antialiased text-center mx-16 text-blue-700 text-3xl py-10"> Pending Articles</p>
 
 <main class="py-4 mx-16">
-
   <div class="px-4">
-    <div class="block md:flex justify-between md:-mx-2">
-        {% for x in pending_articles %}
-      <div class="w-full lg:w-1/3  md:mx-2 mb-4 md:mb-0 ">
-        <div class="bg-white rounded-lg overflow-hidden shadow relative">
-{#          <img class="h-56 w-full object-cover object-center" src="https://images.unsplash.com/photo-1457282367193-e3b79e38f207?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1654&q=80" alt="">#}
-          <div class="p-4 h-auto md:h-40 lg:h-64">
-            <a href="article-list/pending/{{ x.id }}" class="block text-blue-500 hover:text-blue-600 font-semibold mb-2 text-lg md:text-base lg:text-lg">
-              {{ x.title }}
-            </a>
-            <div class="text-gray-600 text-sm leading-relaxed block md:text-xs lg:text-sm">
-                {{ x.abstract | truncatewords:20 }}
-            </div>
-            <div class="text-teal-600 py-2 text-lg leading-relaxed block md:text-xs lg:text-sm">
-                <strong>Journal - </strong>{{ x.journal.code }}
-            </div>
-            <div class="text-teal-600 py-1 text-lg leading-relaxed block md:text-xs lg:text-sm">
-                <strong>Created - </strong>{{ x.created_at|timesince }} ago.
-            </div>
-            <div class="relative mt-2 lg:absolute bottom-0 mb-4 md:hidden lg:block">
-                <a class="inline bg-gray-300 py-1 px-2 rounded-full text-xs  text-gray-700" href="#">Author - {{ x.student.name}}</a>
-{#                <a class="inline bg-gray-300 py-1 px-2 rounded-full text-xs  text-gray-700" href="#">Volume - {{ x.volume }}</a>#}
-{#                <a class="inline bg-gray-300 py-1 px-2 rounded-full text-xs  text-gray-700" href="#">Issue - {{ x.issue }}</a>#}
-            </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      {% for x in pending_articles %}
+      <div class="bg-white rounded-lg overflow-hidden shadow relative">
+        {# <img class="h-56 w-full object-cover object-center" src="https://images.unsplash.com/photo-1457282367193-e3b79e38f207?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1654&q=80" alt=""> #}
+        <div class="p-4">
+          <a href="article-list/pending/{{ x.id }}" class="block text-blue-500 hover:text-blue-600 font-semibold mb-2 text-lg md:text-base lg:text-lg">
+            {{ x.title }}
+          </a>
+          <div class="text-gray-600 text-sm leading-relaxed mb-4">
+            {{ x.abstract | truncatewords:20 }}
+          </div>
+          <div class="text-teal-600 text-lg leading-relaxed">
+            <strong>Journal - </strong>{{ x.journal.code }}
+          </div>
+          <div class="text-teal-600 text-lg leading-relaxed">
+            <strong>Created - </strong>{{ x.created_at|timesince }} ago.
+          </div>
+          <div class="relative mt-2">
+            <a class="inline bg-gray-300 py-1 px-2 rounded-full text-xs text-gray-700" href="#">Author - {{ x.student.name }}</a>
+            {# <a class="inline bg-gray-300 py-1 px-2 rounded-full text-xs text-gray-700" href="#">Volume - {{ x.volume }}</a> #}
+            {# <a class="inline bg-gray-300 py-1 px-2 rounded-full text-xs text-gray-700" href="#">Issue - {{ x.issue }}</a> #}
           </div>
         </div>
       </div>
-        {% endfor %}
+      {% endfor %}
     </div>
   </div>
 </main>
 
 
 
-<p class="antialiased text-center mx-16 text-green-700 text-3xl"> Accepted Articles for publishing</p>
+
+<p class="antialiased text-center mx-16 my-16 text-green-700 text-3xl"> Accepted Articles for publishing</p>
 
 <main class="py-4 mx-16">
-
   <div class="px-4">
-    <div class="block md:flex justify-between md:-mx-2">
-        {% for x in accepted_articles %}
-      <div class="w-full lg:w-1/3 md:mx-2 mb-4 md:mb-0">
-        <div class="bg-white rounded-lg overflow-hidden shadow relative">
-{#          <img class="h-56 w-full object-cover object-center" src="https://images.unsplash.com/photo-1457282367193-e3b79e38f207?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1654&q=80" alt="">#}
-          <div class="p-4 h-auto md:h-64 lg:h-64">
-            <a href="{{ x.get_absolute_url }}" class="block text-green-500 hover:text-blue-600 font-semibold mb-2 text-lg md:text-base lg:text-lg">
-              {{ x.title }}
-            </a>
-            <div class="text-gray-600 text-sm leading-relaxed block md:text-xs lg:text-sm">
-                {{ x.abstract | truncatewords:20 }}
-            </div>
-
-            <div class="text-teal-600 py-1 text-lg leading-relaxed block md:text-xs lg:text-sm">
-                <strong>Journal - </strong>{{ x.journal.code }}
-            </div>
-            <div class="text-teal-600 py-1 text-lg leading-relaxed block md:text-xs lg:text-sm">
-                <strong>Created - </strong>{{ x.created_at|timesince }} ago.
-            </div>
-
-            <div class="relative mt-2 lg:absolute bottom-0 mb-4 md:hidden lg:block">
-                <a class="inline bg-gray-300 py-1 px-2 rounded-full text-xs  text-gray-700" href="#">Author - {{ x.student.name}}</a>
-            </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      {% for x in accepted_articles %}
+      <div class="bg-white rounded-lg overflow-hidden shadow relative">
+        {# <img class="h-56 w-full object-cover object-center" src="https://images.unsplash.com/photo-1457282367193-e3b79e38f207?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1654&q=80" alt=""> #}
+        <div class="p-4">
+          <a href="{{ x.get_absolute_url }}" class="block text-green-500 hover:text-blue-600 font-semibold mb-2 text-lg md:text-base lg:text-lg">
+            {{ x.title }}
+          </a>
+          <div class="text-gray-600 text-sm leading-relaxed mb-4">
+            {{ x.abstract | truncatewords:20 }}
+          </div>
+          <div class="text-teal-600 text-lg leading-relaxed">
+            <strong>Journal - </strong>{{ x.journal.code }}
+          </div>
+          <div class="text-teal-600 text-lg leading-relaxed">
+            <strong>Created - </strong>{{ x.created_at|timesince }} ago.
+          </div>
+          <div class="relative mt-2">
+            <a class="inline bg-gray-300 py-1 px-2 rounded-full text-xs text-gray-700" href="#">Author - {{ x.student.name }}</a>
           </div>
         </div>
       </div>
-        {% endfor %}
+      {% endfor %}
     </div>
   </div>
 </main>
 
 
-<p class="antialiased text-center mx-16 text-red-700 text-3xl"> Rejected Articles </p>
+
+<p class="antialiased text-center mx-16 my-16 text-red-700 text-3xl"> Rejected Articles </p>
 
 <main class="py-4 mx-16">
-
   <div class="px-4">
-    <div class="block md:flex justify-between md:-mx-2">
-        {% for x in rejected_articles %}
-      <div class="w-full lg:w-1/3 md:mx-2 mb-4 md:mb-0">
-        <div class="bg-white rounded-lg overflow-hidden shadow relative">
-{#          <img class="h-56 w-full object-cover object-center" src="https://images.unsplash.com/photo-1457282367193-e3b79e38f207?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1654&q=80" alt="">#}
-          <div class="p-4 h-auto md:h-64 lg:h-64">
-            <a href="{{ x.get_absolute_url }}" class="block text-red-500 hover:text-blue-600 font-semibold mb-2 text-lg md:text-base lg:text-lg">
-              {{ x.title }}
-            </a>
-            <div class="text-gray-600 text-sm leading-relaxed block md:text-xs lg:text-sm">
-                {{ x.abstract | truncatewords:20 }}
-            </div>
-            <div class="text-teal-600 py-2 text-lg leading-relaxed block md:text-xs lg:text-sm">
-                <strong>Journal - </strong>{{ x.journal.code }}
-            </div>
-            <div class="text-teal-600 py-1 text-lg leading-relaxed block md:text-xs lg:text-sm">
-                <strong>Created - </strong>{{ x.created_at|timesince }} ago.
-            </div>
-            <div class="relative mt-2 lg:absolute bottom-0 mb-4 md:hidden lg:block">
-                <a class="inline bg-gray-300 py-1 px-2 rounded-full text-xs  text-gray-700" href="#">Author - {{ x.student.name}}</a>
-            </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      {% for x in rejected_articles %}
+      <div class="bg-white rounded-lg overflow-hidden shadow relative">
+        {# <img class="h-56 w-full object-cover object-center" src="https://images.unsplash.com/photo-1457282367193-e3b79e38f207?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1654&q=80" alt=""> #}
+        <div class="p-4">
+          <a href="{{ x.get_absolute_url }}" class="block text-red-500 hover:text-blue-600 font-semibold mb-2 text-lg md:text-base lg:text-lg">
+            {{ x.title }}
+          </a>
+          <div class="text-gray-600 text-sm leading-relaxed mb-4">
+            {{ x.abstract | truncatewords:20 }}
+          </div>
+          <div class="text-teal-600 py-2 text-lg leading-relaxed">
+            <strong>Journal - </strong>{{ x.journal.code }}
+          </div>
+          <div class="text-teal-600 py-1 text-lg leading-relaxed">
+            <strong>Created - </strong>{{ x.created_at|timesince }} ago.
+          </div>
+          <div class="relative mt-2">
+            <a class="inline bg-gray-300 py-1 px-2 rounded-full text-xs text-gray-700" href="#">Author - {{ x.student.name }}</a>
           </div>
         </div>
       </div>
-        {% endfor %}
+      {% endfor %}
     </div>
   </div>
 </main>
+
 
 <footer class="my-12 py-16" ></footer>
 
