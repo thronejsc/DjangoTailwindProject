@@ -76,7 +76,7 @@ class ArticleForm(forms.ModelForm):
 class ArticleFormFinal(forms.ModelForm):
     class Meta:
         model = Article
-        fields = ["volume", "issue", "issue_title", "title", "abstract", "text", "state",]
+        fields = ["volume", "issue", "issue_title", "title", "abstract", "text", "keywords", "state",]
 
         widgets = {
             'title': forms.TextInput(attrs={
@@ -89,6 +89,7 @@ class ArticleFormFinal(forms.ModelForm):
                 'class': 'w-full shadow-inner md:w-1/3 rounded py-4 px-3 mb-6 md:mb-0 border-2'}),
             'issue': forms.NumberInput(attrs={
                 'class': 'w-full shadow-inner md:w-1/3 rounded py-4 px-3 mb-6 md:mb-0 border-2'}),
+            'keywords': forms.CheckboxSelectMultiple,
             'state': forms.Select(attrs={
                 'class': 'w-full md:w-1/3 rounded py-4 px-3 mb-6 md:mb-0'
             })
@@ -119,8 +120,21 @@ class ArticleSearchForm(forms.Form):
         ('text', 'Search by Text'),
         ('title', 'Search by Title'),
     )
-    query = forms.CharField(label='Search', max_length=100, required=False)
-    search_option = forms.ChoiceField(label='Search Option', choices=SEARCH_CHOICES)
+    query = forms.CharField(
+        label='',
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter your search query...',
+        })
+    )
+    search_option = forms.ChoiceField(
+        label='',
+        choices=SEARCH_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
 
 class SearchForm(forms.Form):
     SEARCH_CHOICES = (

@@ -245,8 +245,15 @@ def search_articles(request):
             # Search articles by title
             articles = articles.filter(title__icontains=query)
         elif search_option == 'keywords':
-            # Search articles by title
-            articles = articles.filter(title__icontains=query)
+            keywords = query.split()
+            q_objects = Q()
+
+            for keyword in keywords:
+                q_objects |= Q(keywords__word__icontains=keyword)
+
+            articles = Article.objects.filter(q_objects)
+
+
 
     context = {
         'form': form,
