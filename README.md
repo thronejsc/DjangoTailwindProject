@@ -19,5 +19,6 @@ python manage.py migrate
 ```
 ### Run the Server
 ```
+venv/Scripts/Activate
 python manage.py runserver
 ```
